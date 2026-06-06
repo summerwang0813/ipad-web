@@ -19,7 +19,19 @@ If the user explicitly says "同步到网页" or "同步到代码", inspect Figm
 - For Figma writes, load `figma:figma-use` before every `use_figma` call.
 - For full-page Figma generation/writeback, also load `figma:figma-generate-design`.
 - Search and reuse the target Figma file's design-system components, styles, and variables before creating anything.
+- If the target file has no usable component library or variables, create a fallback design-system foundation before writing the page.
 - If a needed color, text style, spacing token, or component variant is missing, create or extend the design system first, then bind page nodes to it.
+
+## Fallback Design System
+
+When the Figma file does not already have a usable component library, create variables and text styles in this order:
+
+1. `01 Base`: primitive colors, neutral ramps, brand ramps, radius primitives, and raw numeric values.
+2. `02 Semantic`: semantic aliases for background, surface, title text, body text, muted text, border, primary action, warning, success, danger, and disabled states.
+3. `03 Spacing`: spacing, gap, padding, container width, section spacing, radius, and control height tokens.
+4. `04 Typography`: reusable typography tokens and callable text styles.
+
+Typography must be reusable, not hardcoded per text layer. Create Figma text styles such as `04 Typography/Display/H1`, `04 Typography/Title/H2`, `04 Typography/Body/Regular`, `04 Typography/Button/Primary`, and apply those styles to text nodes. Where the Figma API supports variable binding for typography values, also create numeric/string variables for font family, font size, line height, font weight, and letter spacing; otherwise the text styles are the callable typography surface.
 
 ## Website To Figma
 
@@ -35,8 +47,10 @@ If the user explicitly says "同步到网页" or "同步到代码", inspect Figm
 3. Prepare component-library references, tokens, and assets.
    - Search Figma libraries first.
    - Import matching component instances from the component library when available.
+   - If no component library exists, create the fallback `01 Base / 02 Semantic / 03 Spacing / 04 Typography` system first.
    - Bind fills, strokes, and text colors to existing variables.
-   - Create missing variables in a local collection such as `Codex / Page Tokens` only when the library lacks the required value.
+   - Bind typography to text styles; do not leave repeated font settings as one-off layer properties.
+   - Create missing variables in the correct fallback layer only when the library lacks the required value.
    - Upload webpage images to Figma and map each `src` to an `imageHash`.
 
 4. Write incrementally.
@@ -76,6 +90,8 @@ If the user explicitly says "同步到网页" or "同步到代码", inspect Figm
 
 - Never redraw from memory. Always capture or inspect the current source of truth first.
 - Do not build page-specific one-off colors, fonts, or controls when the Figma component library has a matching asset.
+- Do not write a page into a file with no design-system foundation; create `01 Base`, `02 Semantic`, `03 Spacing`, and `04 Typography` first.
+- Do not hardcode typography on repeated text nodes; create callable text styles and apply them.
 - Do not treat the current website's product/project name as the skill name; this skill applies to any generated website.
 - Do not add states the source does not have, such as making static detail rows look selected.
 - Do not add shadows to same-level cards if the source uses flat layers; keep shadows for floating/sticky layers only.
