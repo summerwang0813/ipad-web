@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>iPad 官方商城原型</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-frame">
+      <header class="site-header">
+        <div class="container header-inner">
+          <a class="brand" href="#/" aria-label="iPad 首页">
+            <span class="brand-mark">iPad</span>
+            <span class="brand-sub">官方商城</span>
+          </a>
+          <nav class="nav-links" aria-label="主导航">
+            <a href="#/" data-route="/">产品</a>
+            <a href="#/orders" data-route="/orders">订单管理</a>
+            <a href="#/account" data-route="/account">个人中心</a>
+          </nav>
+          <div class="header-actions" id="headerActions"></div>
+        </div>
+      </header>
+
+      <main id="app" class="app" tabindex="-1"></main>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
