@@ -1,25 +1,27 @@
 ---
 name: figma-page-sync
-description: "Sync implemented web app pages and Figma screens in either direction. Use when the user says figma-page-writeback, figma-page-sync, sync to Figma, sync to web, write current webpage to Figma, update code from Figma, or asks to keep a Figma page and implemented route aligned with exact layout, variables, typography, images, components, and screenshots."
+description: "Write generated or implemented websites back to Figma with exact visual and semantic fidelity. Use when the user says figma-page-writeback, figma-page-sync, sync to Figma, write website to Figma, push current webpage into Figma, or asks to keep any website, landing page, ecommerce page, dashboard, tool, or generated web app aligned with Figma while reusing design-system components, variables, typography, colors, icons, images, and screenshots."
 ---
 
 # Figma Page Sync
 
-Use this skill to keep a coded web page and a Figma screen aligned. It supports two directions:
+Use this skill to write any generated or implemented website back into Figma and keep the Figma source aligned with the real webpage. The primary direction is:
 
-- **Web to Figma**: the running webpage is source of truth; capture the real DOM/CSS/layout and write it into Figma.
-- **Figma to Web**: the Figma frame is source of truth; inspect the design and update webpage code to match it.
+- **Website to Figma**: the running webpage is source of truth; capture the real DOM/CSS/layout and write it into Figma using the target file's component library, variables, typography, colors, icons, and reusable patterns.
 
-Always preserve the user's latest source of truth. If the user says "同步到 Figma", use Web to Figma. If the user says "同步到网页" or "同步到代码", use Figma to Web.
+This skill is website-agnostic. Do not assume the current project is the product name or the final repository name. It should work for any site: product pages, landing pages, ecommerce flows, dashboards, SaaS tools, portfolios, and generated prototypes.
+
+If the user explicitly says "同步到网页" or "同步到代码", inspect Figma and update the website code as a secondary workflow. Otherwise default to Website to Figma.
 
 ## Required Tooling
 
 - For webpage capture and verification, use the Browser skill with the in-app browser.
 - For Figma writes, load `figma:figma-use` before every `use_figma` call.
 - For full-page Figma generation/writeback, also load `figma:figma-generate-design`.
-- Prefer existing design-system variables and components. If a needed color is missing, create a Figma variable first, then bind nodes to it.
+- Search and reuse the target Figma file's design-system components, styles, and variables before creating anything.
+- If a needed color, text style, spacing token, or component variant is missing, create or extend the design system first, then bind page nodes to it.
 
-## Web To Figma
+## Website To Figma
 
 1. Capture the running route before writing anything.
    - Save a viewport screenshot.
@@ -30,9 +32,11 @@ Always preserve the user's latest source of truth. If the user says "同步到 F
    - Top-level Figma frames should match webpage modules such as `Header`, `Hero`, `Product Gallery`, `Checkout Summary`, `Payment Detail`, `Order List`.
    - Do not merge unrelated modules into one frame.
 
-3. Prepare tokens and assets.
+3. Prepare component-library references, tokens, and assets.
    - Search Figma libraries first.
-   - Create missing variables in a local collection such as `Codex / Page Tokens`.
+   - Import matching component instances from the component library when available.
+   - Bind fills, strokes, and text colors to existing variables.
+   - Create missing variables in a local collection such as `Codex / Page Tokens` only when the library lacks the required value.
    - Upload webpage images to Figma and map each `src` to an `imageHash`.
 
 4. Write incrementally.
@@ -45,7 +49,7 @@ Always preserve the user's latest source of truth. If the user says "同步到 F
    - Compare against captured webpage layout.
    - Pull a Figma screenshot and visually inspect for image drift, button padding, icon alignment, text wrapping, shadows, and accidental selected states.
 
-## Figma To Web
+## Optional Figma To Website
 
 1. Inspect the target Figma frame.
    - Use Figma metadata, design context, variables, and screenshot.
@@ -66,11 +70,13 @@ Always preserve the user's latest source of truth. If the user says "同步到 F
    - Compare the webpage screenshot and layout to the Figma source.
 
 5. Optionally write back.
-   - If the user wants both sides aligned after code changes, run the Web to Figma workflow again.
+   - If the user wants both sides aligned after code changes, run the Website to Figma workflow again.
 
 ## Hard Rules
 
 - Never redraw from memory. Always capture or inspect the current source of truth first.
+- Do not build page-specific one-off colors, fonts, or controls when the Figma component library has a matching asset.
+- Do not treat the current website's product/project name as the skill name; this skill applies to any generated website.
 - Do not add states the source does not have, such as making static detail rows look selected.
 - Do not add shadows to same-level cards if the source uses flat layers; keep shadows for floating/sticky layers only.
 - Do not use placeholder images when real page assets are available.

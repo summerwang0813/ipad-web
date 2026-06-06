@@ -1,17 +1,19 @@
 # Page Sync Workflow
 
-This reference expands the `figma-page-sync` skill for exact page synchronization.
+This reference expands the `figma-page-sync` skill for writing generated or implemented websites back into Figma with exact page synchronization.
 
 ## Core Principles
 
 1. Capture or inspect the real source before changing the other side.
 2. Keep Figma nodes semantically aligned with webpage modules.
-3. Bind colors to Figma variables; create missing variables before applying them.
-4. Use real images, real object-fit behavior, and real coordinates.
-5. Write and verify in sections, not as one huge unverified operation.
-6. Avoid invented states, decorative effects, and layout shortcuts.
+3. Search and reuse the Figma file's component library, styles, and variables before creating local nodes from scratch.
+4. Bind colors and text to Figma variables/styles; create missing variables before applying them.
+5. Use real images, real object-fit behavior, and real coordinates.
+6. Write and verify in sections, not as one huge unverified operation.
+7. Avoid invented states, decorative effects, and layout shortcuts.
+8. Keep the workflow website-agnostic; do not bake a specific product or project name into the skill.
 
-## Web To Figma Checklist
+## Generated Website To Figma Checklist
 
 Collect these inputs:
 
@@ -19,6 +21,7 @@ Collect these inputs:
 - Viewport width and height.
 - Figma file key.
 - Figma target page or node ID.
+- Component library or design system to reference, when one exists.
 - Intended frame width and content width.
 - Scope: full page, current viewport, modal, drawer, checkout state, order state, or page section.
 
@@ -29,6 +32,7 @@ Capture these outputs:
 - CSS variable map.
 - Image asset list with `src`, `alt`, natural size, rendered size, and object-fit.
 - Console errors and broken image list.
+- Component candidates and variable/style matches found in the target Figma file.
 
 Recommended file names:
 
@@ -37,11 +41,13 @@ Recommended file names:
 - `tmp/figma-target.png`
 - `tmp/layout-diff.json`
 
-## Figma Token Procedure
+## Component Library And Token Procedure
 
-1. Search existing libraries and local variables.
-2. Create missing variables in `Codex / Page Tokens`.
-3. Use stable token names:
+1. Search existing components, component sets, styles, and variables in the target Figma file and subscribed libraries.
+2. Import matching components for buttons, inputs, selectors, tabs, badges, order cards, navigation, icons, and common ecommerce controls.
+3. Use library text styles and color variables when available.
+4. Create missing variables in `Codex / Page Tokens` only when no suitable library token exists.
+5. Use stable fallback token names:
    - `codex/color/white`
    - `codex/color/title`
    - `codex/color/text`
@@ -53,7 +59,7 @@ Recommended file names:
    - `codex/color/brand`
    - `codex/color/brand-weak`
    - `codex/color/brand-weakest`
-4. Set correct scopes:
+6. Set correct scopes:
    - Text colors: `TEXT_FILL`
    - Background fills: `FRAME_FILL`, `SHAPE_FILL`
    - Borders: `STROKE_COLOR`
@@ -72,7 +78,7 @@ Use `STROKE_COLOR`, not the older `STROKE` scope.
 
 Write in this order unless the page structure requires otherwise:
 
-1. Variables and frame shell.
+1. Component-library search, variables, and frame shell.
 2. Header or navigation.
 3. Primary hero or page title area.
 4. Main product/gallery/detail modules.
@@ -98,7 +104,7 @@ After each module, return a compact result:
 }
 ```
 
-## Figma To Web Checklist
+## Optional Figma To Website Checklist
 
 Inspect the Figma source:
 
@@ -129,7 +135,8 @@ Before calling a sync complete, verify:
 - Buttons have correct radius, padding, and vertical spacing.
 - Images are not broken, stretched, or cropped incorrectly.
 - Icons are centered and use the same SVG/component source.
-- Figma variables are used for colors when available.
+- Figma component instances, variables, and text styles are used when available.
+- Missing design-system values were added as variables before use.
 - No accidental selected, hover, disabled, or active states were added.
 - Sticky/floating layers keep appropriate elevation; same-level content stays flat when source is flat.
 
