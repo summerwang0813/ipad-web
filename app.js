@@ -123,6 +123,52 @@ const paymentMethods = [
   { id: "company", name: "企业转账", desc: "提交后保留 24 小时订单库存" }
 ];
 
+const phoneCodeOptions = [
+  { code: "+852", label: "香港 +852" },
+  { code: "+86", label: "中国大陆 +86" },
+  { code: "+853", label: "澳门 +853" },
+  { code: "+886", label: "台湾 +886" },
+  { code: "+65", label: "新加坡 +65" }
+];
+
+const regionTree = [
+  {
+    name: "香港特别行政区",
+    cities: [
+      {
+        name: "香港",
+        districts: ["中西区", "湾仔区", "东区", "南区", "油尖旺区", "深水埗区", "九龙城区", "观塘区", "荃湾区", "沙田区"]
+      }
+    ]
+  },
+  {
+    name: "广东省",
+    cities: [
+      { name: "深圳市", districts: ["南山区", "福田区", "罗湖区", "宝安区", "龙岗区"] },
+      { name: "广州市", districts: ["天河区", "越秀区", "海珠区", "番禺区", "白云区"] }
+    ]
+  },
+  {
+    name: "上海市",
+    cities: [
+      { name: "上海市", districts: ["黄浦区", "徐汇区", "静安区", "浦东新区", "长宁区"] }
+    ]
+  },
+  {
+    name: "北京市",
+    cities: [
+      { name: "北京市", districts: ["朝阳区", "海淀区", "东城区", "西城区", "丰台区"] }
+    ]
+  },
+  {
+    name: "浙江省",
+    cities: [
+      { name: "杭州市", districts: ["西湖区", "滨江区", "上城区", "拱墅区", "余杭区"] },
+      { name: "宁波市", districts: ["鄞州区", "海曙区", "江北区", "镇海区", "北仑区"] }
+    ]
+  }
+];
+
 const storageKeys = {
   accounts: "ipad_store_accounts",
   currentUser: "ipad_store_current_user",
@@ -211,23 +257,67 @@ function saveOrders(orders) {
   writeJSON(storageKeys.orders, orders);
 }
 
+function getProvinceData(province) {
+  return regionTree.find((item) => item.name === province) || regionTree[0];
+}
+
+function getCityData(province, city) {
+  const provinceData = getProvinceData(province);
+  return provinceData.cities.find((item) => item.name === city) || provinceData.cities[0];
+}
+
+function composeAddress(address = {}) {
+  return [address.province, address.city, address.district, address.detailAddress]
+    .map((item) => String(item || "").trim())
+    .filter(Boolean)
+    .join(" ");
+}
+
+function hasStructuredAddress(address = {}) {
+  return Boolean(address.province || address.city || address.district || address.detailAddress);
+}
+
 function normalizeAddress(address = {}) {
-  return {
+  const structured = hasStructuredAddress(address);
+  const provinceData = getProvinceData(address.province || regionTree[0].name);
+  const cityData = getCityData(provinceData.name, address.city);
+  const district = cityData.districts.includes(address.district) ? address.district : cityData.districts[0];
+  const detailAddress = structured ? String(address.detailAddress || "").trim() : "";
+  const rawAddress = String(address.address || "").trim();
+  const normalized = {
     name: String(address.name || "").trim(),
+    phoneCode: String(address.phoneCode || phoneCodeOptions[0].code).trim(),
     phone: String(address.phone || "").trim(),
-    address: String(address.address || "").trim(),
+    province: structured ? provinceData.name : "",
+    city: structured ? cityData.name : "",
+    district: structured ? district : "",
+    detailAddress,
     note: String(address.note || "").trim()
   };
+  normalized.address = structured ? composeAddress(normalized) : rawAddress;
+  return normalized;
 }
 
 function isAddressComplete(address) {
   const normalized = normalizeAddress(address);
+  if (hasStructuredAddress(normalized)) {
+    return Boolean(normalized.name && normalized.phone && normalized.province && normalized.city && normalized.district && normalized.detailAddress);
+  }
   return Boolean(normalized.name && normalized.phone && normalized.address);
 }
 
 function addressSignature(address) {
   const normalized = normalizeAddress(address);
-  return [normalized.name, normalized.phone, normalized.address].join("|");
+  return [normalized.name, normalized.phoneCode, normalized.phone, normalized.province, normalized.city, normalized.district, normalized.detailAddress || normalized.address].join("|");
+}
+
+function formatPhone(address = {}) {
+  const normalized = normalizeAddress(address);
+  return `${normalized.phoneCode || phoneCodeOptions[0].code} ${normalized.phone}`.trim();
+}
+
+function formatAddress(address = {}) {
+  return normalizeAddress(address).address;
 }
 
 function getAddressBooks() {
@@ -450,8 +540,13 @@ function clearDraft() {
 function defaultAddress(user) {
   return {
     name: user?.name || "",
+    phoneCode: phoneCodeOptions[0].code,
     phone: user?.phone || "",
-    address: user?.address || "",
+    province: regionTree[0].name,
+    city: regionTree[0].cities[0].name,
+    district: regionTree[0].cities[0].districts[0],
+    detailAddress: "",
+    address: "",
     note: ""
   };
 }
@@ -459,7 +554,12 @@ function defaultAddress(user) {
 function emptyAddress(user) {
   return {
     name: user?.name || "",
+    phoneCode: phoneCodeOptions[0].code,
     phone: user?.phone || "",
+    province: regionTree[0].name,
+    city: regionTree[0].cities[0].name,
+    district: regionTree[0].cities[0].districts[0],
+    detailAddress: "",
     address: "",
     note: ""
   };
@@ -470,8 +570,16 @@ function checkoutDefaultAddress(user) {
   return firstAddress ? normalizeAddress(firstAddress) : defaultAddress(user);
 }
 
+function optionMarkup(options, selected) {
+  return options
+    .map((option) => `<option value="${esc(option)}" ${option === selected ? "selected" : ""}>${esc(option)}</option>`)
+    .join("");
+}
+
 function renderAddressForm(address, title) {
   const normalized = normalizeAddress(address);
+  const provinceData = getProvinceData(normalized.province);
+  const cityData = getCityData(normalized.province, normalized.city);
   return `
     <div class="address-form">
       <div class="address-form-head">
@@ -484,11 +592,32 @@ function renderAddressForm(address, title) {
       </div>
       <div class="field">
         <label for="receiverPhone">联系电话</label>
-        <input id="receiverPhone" data-draft-field="phone" value="${esc(normalized.phone)}" />
+        <div class="phone-field">
+          <select id="receiverPhoneCode" data-draft-field="phoneCode" aria-label="电话区号">
+            ${phoneCodeOptions
+              .map((item) => `<option value="${esc(item.code)}" ${item.code === normalized.phoneCode ? "selected" : ""}>${esc(item.label)}</option>`)
+              .join("")}
+          </select>
+          <input id="receiverPhone" data-draft-field="phone" value="${esc(normalized.phone)}" />
+        </div>
       </div>
       <div class="field">
-        <label for="receiverAddress">收货地址</label>
-        <textarea id="receiverAddress" data-draft-field="address">${esc(normalized.address)}</textarea>
+        <label>所在地区</label>
+        <div class="region-grid">
+          <select data-draft-field="province" aria-label="省份">
+            ${optionMarkup(regionTree.map((item) => item.name), normalized.province)}
+          </select>
+          <select data-draft-field="city" aria-label="城市">
+            ${optionMarkup(provinceData.cities.map((item) => item.name), normalized.city)}
+          </select>
+          <select data-draft-field="district" aria-label="区县">
+            ${optionMarkup(cityData.districts, normalized.district)}
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="receiverDetailAddress">具体地址</label>
+        <textarea id="receiverDetailAddress" data-draft-field="detailAddress">${esc(normalized.detailAddress)}</textarea>
       </div>
       <div class="field">
         <label for="receiverNote">配送备注</label>
@@ -510,12 +639,13 @@ function renderAddressBook(addressBook, draft) {
         ${addressBook
           .map((address) => {
             const selected = draft.addressMode !== "new" && draft.addressId === address.id;
+            const normalized = normalizeAddress(address);
             return `
-              <button class="address-card ${selected ? "selected" : ""}" data-action="select-address" data-address-id="${esc(address.id)}">
+              <button class="address-card ${selected ? "selected" : ""}" data-action="select-address" data-address-id="${esc(normalized.id || address.id)}">
                 <span class="address-content">
-                  <strong>${esc(address.name)} ${esc(address.phone)}</strong>
-                  <span>${esc(address.address)}</span>
-                  <small>${address.note ? esc(address.note) : "无配送备注"}</small>
+                  <strong>${esc(normalized.name)} ${esc(formatPhone(normalized))}</strong>
+                  <span>${esc(formatAddress(normalized))}</span>
+                  <small>${normalized.note ? esc(normalized.note) : "无配送备注"}</small>
                 </span>
                 <span class="address-tag">${selected ? "已选择" : "选择"}</span>
               </button>
@@ -919,6 +1049,17 @@ function checkoutPage() {
           <div>
             <div class="panel">
               <div class="panel-head">
+                <h2>收货信息</h2>
+                <span class="muted">${addressBook.length ? "地址簿 / 新增地址" : "首次填写后自动保存"}</span>
+              </div>
+              <div class="panel-body">
+                ${renderAddressBook(addressBook, draft)}
+                ${isAddingAddress ? renderAddressForm(draft.address, addressBook.length ? "新增地址" : "新增收货地址") : ""}
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head">
                 <h2>商品信息</h2>
                 <a class="text-link" href="#/product/${product.id}">修改配置</a>
               </div>
@@ -931,17 +1072,6 @@ function checkoutPage() {
                     <p>数量：${draft.selection.qty} · 单价：${money(itemUnitPrice(product, draft.selection))}</p>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            <div class="panel">
-              <div class="panel-head">
-                <h2>收货信息</h2>
-                <span class="muted">${addressBook.length ? "地址簿 / 新增地址" : "首次填写后自动保存"}</span>
-              </div>
-              <div class="panel-body">
-                ${renderAddressBook(addressBook, draft)}
-                ${isAddingAddress ? renderAddressForm(draft.address, addressBook.length ? "新增地址" : "新增收货地址") : ""}
               </div>
             </div>
 
@@ -1297,8 +1427,8 @@ function orderDetailPage(order) {
               <div class="panel-body">
                 <ul class="info-list">
                   <li>收货人：${esc(order.address.name)}</li>
-                  <li>联系电话：${esc(order.address.phone)}</li>
-                  <li>地址：${esc(order.address.address)}</li>
+                  <li>联系电话：${esc(formatPhone(order.address))}</li>
+                  <li>地址：${esc(formatAddress(order.address))}</li>
                   <li>备注：${esc(order.address.note)}</li>
                   <li>物流状态：${order.logistics}</li>
                   <li>履约状态：${orderFulfillmentStatus(order)}</li>
@@ -1505,6 +1635,7 @@ function collectAddressFromPage() {
   document.querySelectorAll("[data-draft-field]").forEach((field) => {
     draft.address[field.dataset.draftField] = field.value.trim();
   });
+  draft.address = normalizeAddress(draft.address);
   saveDraft(draft);
   return draft;
 }
@@ -1661,12 +1792,20 @@ function render() {
 
 document.addEventListener("change", (event) => {
   const target = event.target;
-  if (!target.matches("[data-option-input]")) return;
-  const productId = target.dataset.product;
-  const selection = getSelection(productId);
-  selection[target.dataset.key] = target.value;
-  saveSelection(productId, selection);
-  render();
+  if (target.matches("[data-option-input]")) {
+    const productId = target.dataset.product;
+    const selection = getSelection(productId);
+    selection[target.dataset.key] = target.value;
+    saveSelection(productId, selection);
+    render();
+    return;
+  }
+  if (target.matches("[data-draft-field]")) {
+    collectAddressFromPage();
+    if (target.dataset.draftField === "province" || target.dataset.draftField === "city") {
+      render();
+    }
+  }
 });
 
 document.addEventListener("input", (event) => {
@@ -1764,8 +1903,8 @@ document.addEventListener("click", (event) => {
   if (action === "go-pay") {
     const draft = collectAddressFromPage();
     if (!draft) return;
-    if (!draft.address.name || !draft.address.phone || !draft.address.address) {
-      notice = "请补充完整收货信息后再支付。";
+    if (!isAddressComplete(draft.address)) {
+      notice = "请补充完整收货人、联系电话、省市区和具体地址后再支付。";
       render();
       return;
     }
