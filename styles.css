@@ -1698,17 +1698,17 @@ img {
   .header-actions {
     flex: 1 1 0;
     min-width: 0;
-    justify-content: flex-start;
+    justify-content: flex-end;
     gap: 12px;
   }
 
   .header-actions .header-link {
-    order: 2;
+    order: 1;
     max-width: min(180px, 42vw);
   }
 
   .header-actions .text-link {
-    order: 1;
+    order: 2;
   }
 
   .nav-links {
