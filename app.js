@@ -128,6 +128,7 @@ const storageKeys = {
   currentUser: "ipad_store_current_user",
   selections: "ipad_store_selections",
   checkoutDraft: "ipad_store_checkout_draft",
+  addressBook: "ipad_store_address_book",
   orders: "ipad_store_orders",
   authReturn: "ipad_store_auth_return",
   registerEmail: "ipad_store_register_email"
@@ -208,6 +209,76 @@ function getOrders() {
 
 function saveOrders(orders) {
   writeJSON(storageKeys.orders, orders);
+}
+
+function normalizeAddress(address = {}) {
+  return {
+    name: String(address.name || "").trim(),
+    phone: String(address.phone || "").trim(),
+    address: String(address.address || "").trim(),
+    note: String(address.note || "").trim()
+  };
+}
+
+function isAddressComplete(address) {
+  const normalized = normalizeAddress(address);
+  return Boolean(normalized.name && normalized.phone && normalized.address);
+}
+
+function addressSignature(address) {
+  const normalized = normalizeAddress(address);
+  return [normalized.name, normalized.phone, normalized.address].join("|");
+}
+
+function getAddressBooks() {
+  return readJSON(storageKeys.addressBook, {});
+}
+
+function getAddressBook(user = getCurrentUser()) {
+  if (!user) return [];
+  const books = getAddressBooks();
+  const addresses = books[user.email];
+  return Array.isArray(addresses) ? addresses : [];
+}
+
+function saveAddressBook(user, addresses) {
+  if (!user) return;
+  const books = getAddressBooks();
+  books[user.email] = addresses.slice(0, 8);
+  writeJSON(storageKeys.addressBook, books);
+}
+
+function updateAccountDefaultAddress(user, address) {
+  if (!user) return;
+  const accounts = getAccounts();
+  const index = accounts.findIndex((account) => account.email === user.email);
+  if (index < 0) return;
+  accounts[index] = {
+    ...accounts[index],
+    address: normalizeAddress(address).address
+  };
+  saveAccounts(accounts);
+}
+
+function saveAddressToBook(user, address, addressId) {
+  if (!user || !isAddressComplete(address)) return null;
+  const normalized = normalizeAddress(address);
+  const addresses = getAddressBook(user);
+  const byId = addressId ? addresses.findIndex((item) => item.id === addressId) : -1;
+  const bySignature = addresses.findIndex((item) => addressSignature(item) === addressSignature(normalized));
+  const index = byId >= 0 ? byId : bySignature;
+  const saved = {
+    ...(index >= 0 ? addresses[index] : {}),
+    ...normalized,
+    id: index >= 0 ? addresses[index].id : `addr_${Date.now()}_${Math.floor(Math.random() * 900 + 100)}`,
+    updatedAt: Date.now()
+  };
+  const next = index >= 0
+    ? [saved, ...addresses.filter((_, itemIndex) => itemIndex !== index)]
+    : [saved, ...addresses];
+  saveAddressBook(user, next);
+  updateAccountDefaultAddress(user, saved);
+  return saved;
 }
 
 function orderFulfillmentStatus(order) {
@@ -378,11 +449,83 @@ function clearDraft() {
 
 function defaultAddress(user) {
   return {
-    name: user?.name || "陈景然",
-    phone: user?.phone || "138 0000 2026",
-    address: user?.address || "上海市徐汇区漕溪北路 88 号 18 层",
-    note: "工作日 10:00-18:00 可收货"
+    name: user?.name || "",
+    phone: user?.phone || "",
+    address: user?.address || "",
+    note: ""
   };
+}
+
+function emptyAddress(user) {
+  return {
+    name: user?.name || "",
+    phone: user?.phone || "",
+    address: "",
+    note: ""
+  };
+}
+
+function checkoutDefaultAddress(user) {
+  const [firstAddress] = getAddressBook(user);
+  return firstAddress ? normalizeAddress(firstAddress) : defaultAddress(user);
+}
+
+function renderAddressForm(address, title) {
+  const normalized = normalizeAddress(address);
+  return `
+    <div class="address-form">
+      <div class="address-form-head">
+        <strong>${title}</strong>
+        <span class="muted">填写后提交订单会自动保存</span>
+      </div>
+      <div class="field">
+        <label for="receiverName">收货人</label>
+        <input id="receiverName" data-draft-field="name" value="${esc(normalized.name)}" />
+      </div>
+      <div class="field">
+        <label for="receiverPhone">联系电话</label>
+        <input id="receiverPhone" data-draft-field="phone" value="${esc(normalized.phone)}" />
+      </div>
+      <div class="field">
+        <label for="receiverAddress">收货地址</label>
+        <textarea id="receiverAddress" data-draft-field="address">${esc(normalized.address)}</textarea>
+      </div>
+      <div class="field">
+        <label for="receiverNote">配送备注</label>
+        <input id="receiverNote" data-draft-field="note" value="${esc(normalized.note)}" />
+      </div>
+    </div>
+  `;
+}
+
+function renderAddressBook(addressBook, draft) {
+  if (!addressBook.length) return "";
+  return `
+    <div class="address-book">
+      <div class="address-book-head">
+        <strong>地址簿</strong>
+        <span class="muted">选择一个已保存地址</span>
+      </div>
+      <div class="address-list">
+        ${addressBook
+          .map((address) => {
+            const selected = draft.addressMode !== "new" && draft.addressId === address.id;
+            return `
+              <button class="address-card ${selected ? "selected" : ""}" data-action="select-address" data-address-id="${esc(address.id)}">
+                <span class="address-content">
+                  <strong>${esc(address.name)} ${esc(address.phone)}</strong>
+                  <span>${esc(address.address)}</span>
+                  <small>${address.note ? esc(address.note) : "无配送备注"}</small>
+                </span>
+                <span class="address-tag">${selected ? "已选择" : "选择"}</span>
+              </button>
+            `;
+          })
+          .join("")}
+      </div>
+      <button class="btn secondary address-new-button" data-action="add-address">新增地址</button>
+    </div>
+  `;
 }
 
 function updateHeader() {
@@ -714,12 +857,15 @@ function createCheckoutDraft(productId) {
   const user = getCurrentUser();
   const product = products[productId] || products.base;
   const selection = getSelection(product.id);
+  const [firstAddress] = getAddressBook(user);
   const draft = {
     productId: product.id,
     selection,
     couponId: null,
     paymentMethod: "alipay",
-    address: defaultAddress(user)
+    address: checkoutDefaultAddress(user),
+    addressId: firstAddress?.id || null,
+    addressMode: firstAddress ? "book" : "new"
   };
   saveDraft(draft);
   if (!user) {
@@ -741,6 +887,18 @@ function checkoutPage() {
     return emptyPage("还没有待确认的订单", "先选择一款 iPad，再回到这里确认订单细节。", "#/", "返回产品首页");
   }
 
+  const addressBook = getAddressBook(user);
+  if (addressBook.length && draft.addressMode !== "new" && !draft.addressId && !isAddressComplete(draft.address)) {
+    draft.address = normalizeAddress(addressBook[0]);
+    draft.addressId = addressBook[0].id;
+    draft.addressMode = "book";
+    saveDraft(draft);
+  }
+  if (!draft.addressMode) {
+    draft.addressMode = draft.addressId ? "book" : "new";
+    saveDraft(draft);
+  }
+  const isAddingAddress = !addressBook.length || draft.addressMode === "new";
   const product = products[draft.productId];
   const details = selectionDetails(product, draft.selection);
   const subtotal = draftSubtotal(draft);
@@ -779,25 +937,11 @@ function checkoutPage() {
             <div class="panel">
               <div class="panel-head">
                 <h2>收货信息</h2>
-                <span class="muted">可直接编辑</span>
+                <span class="muted">${addressBook.length ? "地址簿 / 新增地址" : "首次填写后自动保存"}</span>
               </div>
               <div class="panel-body">
-                <div class="field">
-                  <label for="receiverName">收货人</label>
-                  <input id="receiverName" data-draft-field="name" value="${esc(draft.address.name)}" />
-                </div>
-                <div class="field">
-                  <label for="receiverPhone">联系电话</label>
-                  <input id="receiverPhone" data-draft-field="phone" value="${esc(draft.address.phone)}" />
-                </div>
-                <div class="field">
-                  <label for="receiverAddress">收货地址</label>
-                  <textarea id="receiverAddress" data-draft-field="address">${esc(draft.address.address)}</textarea>
-                </div>
-                <div class="field">
-                  <label for="receiverNote">配送备注</label>
-                  <input id="receiverNote" data-draft-field="note" value="${esc(draft.address.note)}" />
-                </div>
+                ${renderAddressBook(addressBook, draft)}
+                ${isAddingAddress ? renderAddressForm(draft.address, addressBook.length ? "新增地址" : "新增收货地址") : ""}
               </div>
             </div>
 
@@ -1311,6 +1455,13 @@ function createOrder() {
   const user = getCurrentUser();
   const draft = getDraft();
   if (!user || !draft) return null;
+  const savedAddress = saveAddressToBook(user, draft.address, draft.addressId);
+  if (savedAddress) {
+    draft.address = normalizeAddress(savedAddress);
+    draft.addressId = savedAddress.id;
+    draft.addressMode = "book";
+    saveDraft(draft);
+  }
   const product = products[draft.productId];
   const subtotal = draftSubtotal(draft);
   const discount = draftDiscount(draft, user);
@@ -1584,6 +1735,32 @@ document.addEventListener("click", (event) => {
     render();
   }
 
+  if (action === "select-address") {
+    const user = getCurrentUser();
+    const draft = getDraft();
+    if (!user || !draft) return;
+    const address = getAddressBook(user).find((item) => item.id === actionTarget.dataset.addressId);
+    if (!address) return;
+    draft.address = normalizeAddress(address);
+    draft.addressId = address.id;
+    draft.addressMode = "book";
+    saveDraft(draft);
+    notice = "";
+    render();
+  }
+
+  if (action === "add-address") {
+    const user = getCurrentUser();
+    const draft = getDraft();
+    if (!draft) return;
+    draft.address = emptyAddress(user);
+    draft.addressId = null;
+    draft.addressMode = "new";
+    saveDraft(draft);
+    notice = "";
+    render();
+  }
+
   if (action === "go-pay") {
     const draft = collectAddressFromPage();
     if (!draft) return;
@@ -1591,6 +1768,13 @@ document.addEventListener("click", (event) => {
       notice = "请补充完整收货信息后再支付。";
       render();
       return;
+    }
+    const savedAddress = saveAddressToBook(getCurrentUser(), draft.address, draft.addressId);
+    if (savedAddress) {
+      draft.address = normalizeAddress(savedAddress);
+      draft.addressId = savedAddress.id;
+      draft.addressMode = "book";
+      saveDraft(draft);
     }
     notice = "";
     navigate("/payment");

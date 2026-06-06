@@ -1387,6 +1387,78 @@ img {
   line-height: 22px;
 }
 
+.address-book,
+.address-list,
+.address-form {
+  display: grid;
+  gap: 12px;
+}
+
+.address-book + .address-form {
+  margin-top: 22px;
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+}
+
+.address-book-head,
+.address-form-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.address-book-head strong,
+.address-form-head strong {
+  color: var(--title);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.address-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  color: var(--text-2);
+  text-align: left;
+}
+
+.address-content {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.address-content span,
+.address-content small {
+  color: var(--text-2);
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.address-content small {
+  color: var(--text-3);
+}
+
+.address-tag {
+  flex: 0 0 auto;
+  color: var(--brand);
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.address-new-button {
+  justify-self: start;
+  margin-top: 2px;
+}
+
+.address-form .field:last-child {
+  margin-bottom: 0;
+}
+
 .muted {
   color: var(--text-3);
 }
@@ -1439,6 +1511,7 @@ img {
   line-height: 20px;
 }
 
+.address-card.selected,
 .coupon-card.selected,
 .payment-card.selected {
   border-color: var(--blue);
@@ -2079,6 +2152,7 @@ img {
   }
 
   .order-summary-bar,
+  .address-card,
   .coupon-card,
   .payment-card {
     align-items: stretch;
