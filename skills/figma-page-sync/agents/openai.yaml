@@ -1,0 +1,7 @@
+interface:
+  display_name: "Figma Page Sync"
+  short_description: "Sync webpages and Figma screens accurately"
+  default_prompt: "Use $figma-page-sync to sync the current web page and Figma screen, then verify layout, tokens, images, and screenshots."
+
+policy:
+  allow_implicit_invocation: true
