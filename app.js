@@ -1241,10 +1241,6 @@ function helpPage() {
           <p class="section-kicker">帮助中心</p>
           <h1 class="section-title">iPad 购买支持。</h1>
           <p class="section-desc">围绕 iPad 选购、配件兼容、付款发票、配送、退货退款和保修售后等常见购买问题，购买前后都能快速找到答案。</p>
-          <div class="help-search" aria-label="帮助中心搜索入口">
-            <span>搜索机型、配件、配送、退货、发票、保修</span>
-            <a class="text-link" href="#/orders">查看订单</a>
-          </div>
         </div>
         <div class="help-action-grid">
           <a class="help-action-card" href="#/orders">
@@ -1288,14 +1284,6 @@ function helpPage() {
                 <div class="help-status-row"><span>退货</span><strong>收货后 14 天内可申请</strong></div>
                 <div class="help-status-row"><span>发票</span><strong>随订单状态更新</strong></div>
                 <div class="help-status-row"><span>售后</span><strong>凭订单享受保修</strong></div>
-              </div>
-            </div>
-            <div class="panel help-contact">
-              <div class="panel-head"><h2>常用入口</h2></div>
-              <div class="panel-body help-link-list">
-                <a href="#/account">个人中心</a>
-                <a href="#/orders">全部订单</a>
-                <a href="#/">返回产品页</a>
               </div>
             </div>
           </aside>
