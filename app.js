@@ -183,6 +183,7 @@ const storageKeys = {
 let notice = "";
 const galleryIndexes = {};
 let lightboxProductId = null;
+let addressModalMode = null;
 
 const app = document.querySelector("#app");
 const headerActions = document.querySelector("#headerActions");
@@ -586,40 +587,44 @@ function renderAddressForm(address, title) {
         <strong>${title}</strong>
         <span class="muted">填写后提交订单会自动保存</span>
       </div>
-      <div class="field">
-        <label for="receiverName">收货人</label>
-        <input id="receiverName" data-draft-field="name" value="${esc(normalized.name)}" />
-      </div>
-      <div class="field">
-        <label for="receiverPhone">联系电话</label>
-        <div class="phone-field">
-          <select id="receiverPhoneCode" data-draft-field="phoneCode" aria-label="电话区号">
-            ${phoneCodeOptions
-              .map((item) => `<option value="${esc(item.code)}" ${item.code === normalized.phoneCode ? "selected" : ""}>${esc(item.label)}</option>`)
-              .join("")}
-          </select>
-          <input id="receiverPhone" data-draft-field="phone" value="${esc(normalized.phone)}" />
+      <div class="address-row address-row-contact">
+        <div class="field">
+          <label for="receiverName">收货人</label>
+          <input id="receiverName" data-draft-field="name" value="${esc(normalized.name)}" />
+        </div>
+        <div class="field">
+          <label for="receiverPhone">联系电话</label>
+          <div class="phone-field">
+            <select id="receiverPhoneCode" data-draft-field="phoneCode" aria-label="电话区号">
+              ${phoneCodeOptions
+                .map((item) => `<option value="${esc(item.code)}" ${item.code === normalized.phoneCode ? "selected" : ""}>${esc(item.label)}</option>`)
+                .join("")}
+            </select>
+            <input id="receiverPhone" data-draft-field="phone" value="${esc(normalized.phone)}" />
+          </div>
         </div>
       </div>
-      <div class="field">
-        <label>所在地区</label>
-        <div class="region-grid">
-          <select data-draft-field="province" aria-label="省份">
-            ${optionMarkup(regionTree.map((item) => item.name), normalized.province)}
-          </select>
-          <select data-draft-field="city" aria-label="城市">
-            ${optionMarkup(provinceData.cities.map((item) => item.name), normalized.city)}
-          </select>
-          <select data-draft-field="district" aria-label="区县">
-            ${optionMarkup(cityData.districts, normalized.district)}
-          </select>
+      <div class="address-row address-row-location">
+        <div class="field">
+          <label>所在地区</label>
+          <div class="region-grid">
+            <select data-draft-field="province" aria-label="省份">
+              ${optionMarkup(regionTree.map((item) => item.name), normalized.province)}
+            </select>
+            <select data-draft-field="city" aria-label="城市">
+              ${optionMarkup(provinceData.cities.map((item) => item.name), normalized.city)}
+            </select>
+            <select data-draft-field="district" aria-label="区县">
+              ${optionMarkup(cityData.districts, normalized.district)}
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="receiverDetailAddress">具体地址</label>
+          <input id="receiverDetailAddress" data-draft-field="detailAddress" value="${esc(normalized.detailAddress)}" />
         </div>
       </div>
-      <div class="field">
-        <label for="receiverDetailAddress">具体地址</label>
-        <textarea id="receiverDetailAddress" data-draft-field="detailAddress">${esc(normalized.detailAddress)}</textarea>
-      </div>
-      <div class="field">
+      <div class="field address-row-note">
         <label for="receiverNote">配送备注</label>
         <input id="receiverNote" data-draft-field="note" value="${esc(normalized.note)}" />
       </div>
@@ -627,33 +632,73 @@ function renderAddressForm(address, title) {
   `;
 }
 
-function renderAddressBook(addressBook, draft) {
-  if (!addressBook.length) return "";
+function renderAddressCard(address, draft, action = "") {
+  const normalized = normalizeAddress(address);
+  const selected = draft.addressMode !== "new" && draft.addressId === address.id;
+  const tag = selected ? "已选择" : action ? "选择" : "当前使用";
+  const attrs = action ? `button class="address-card ${selected ? "selected" : ""}" data-action="${action}" data-address-id="${esc(address.id)}"` : `div class="address-card selected address-summary-card"`;
   return `
-    <div class="address-book">
-      <div class="address-book-head">
-        <strong>地址簿</strong>
-        <span class="muted">选择一个已保存地址</span>
+    <${attrs}>
+      <span class="address-content">
+        <strong>${esc(normalized.name)} ${esc(formatPhone(normalized))}</strong>
+        <span>${esc(formatAddress(normalized))}</span>
+        <small>${normalized.note ? esc(normalized.note) : "无配送备注"}</small>
+      </span>
+      <span class="address-tag">${tag}</span>
+    </${action ? "button" : "div"}>
+  `;
+}
+
+function renderAddressBookList(addressBook, draft) {
+  if (!addressBook.length) {
+    return `
+      <div class="empty-state compact">
+        <h2>还没有保存地址</h2>
+        <p>新增一个地址后，下次结算可以直接选择。</p>
+        <button class="btn primary" data-action="open-address-new">新增地址</button>
       </div>
-      <div class="address-list">
-        ${addressBook
-          .map((address) => {
-            const selected = draft.addressMode !== "new" && draft.addressId === address.id;
-            const normalized = normalizeAddress(address);
-            return `
-              <button class="address-card ${selected ? "selected" : ""}" data-action="select-address" data-address-id="${esc(normalized.id || address.id)}">
-                <span class="address-content">
-                  <strong>${esc(normalized.name)} ${esc(formatPhone(normalized))}</strong>
-                  <span>${esc(formatAddress(normalized))}</span>
-                  <small>${normalized.note ? esc(normalized.note) : "无配送备注"}</small>
-                </span>
-                <span class="address-tag">${selected ? "已选择" : "选择"}</span>
-              </button>
-            `;
-          })
-          .join("")}
+    `;
+  }
+  return `<div class="address-list">${addressBook.map((address) => renderAddressCard(address, draft, "select-address")).join("")}</div>`;
+}
+
+function renderCheckoutAddress(addressBook, draft) {
+  const hasAddress = isAddressComplete(draft.address);
+  return `
+    <div class="checkout-address-box">
+      ${hasAddress
+        ? renderAddressCard({ ...draft.address, id: draft.addressId || "current" }, draft)
+        : `<div class="address-empty"><strong>还没有收货地址</strong><span>新增地址后可继续支付。</span></div>`}
+      <div class="address-actions">
+        <button class="btn secondary" data-action="open-address-book">地址簿</button>
+        <button class="btn ${hasAddress ? "secondary" : "primary"}" data-action="open-address-new">新增地址</button>
       </div>
-      <button class="btn secondary address-new-button" data-action="add-address">新增地址</button>
+    </div>
+  `;
+}
+
+function renderAddressModal(addressBook, draft) {
+  if (!addressModalMode) return "";
+  const isBook = addressModalMode === "book";
+  return `
+    <div class="address-modal" role="dialog" aria-modal="true" aria-label="${isBook ? "地址簿" : "新增地址"}">
+      <div class="address-modal-backdrop" data-action="close-address-modal"></div>
+      <div class="address-modal-panel">
+        <div class="address-modal-head">
+          <div>
+            <p class="section-kicker">收货信息</p>
+            <h2>${isBook ? "选择地址簿" : "新增收货地址"}</h2>
+          </div>
+          <button class="address-modal-close" data-action="close-address-modal" aria-label="关闭地址弹窗">×</button>
+        </div>
+        <div class="address-modal-body">
+          ${isBook ? renderAddressBookList(addressBook, draft) : renderAddressForm(draft.address, "新增地址")}
+          ${!isBook && notice ? `<p class="message">${notice}</p>` : ""}
+        </div>
+        ${isBook
+          ? `<div class="address-modal-foot"><button class="btn secondary" data-action="open-address-new">新增地址</button></div>`
+          : `<div class="address-modal-foot"><button class="btn secondary" data-action="close-address-modal">取消</button><button class="btn primary" data-action="save-address-modal">保存并使用</button></div>`}
+      </div>
     </div>
   `;
 }
@@ -1028,7 +1073,6 @@ function checkoutPage() {
     draft.addressMode = draft.addressId ? "book" : "new";
     saveDraft(draft);
   }
-  const isAddingAddress = !addressBook.length || draft.addressMode === "new";
   const product = products[draft.productId];
   const details = selectionDetails(product, draft.selection);
   const subtotal = draftSubtotal(draft);
@@ -1038,7 +1082,7 @@ function checkoutPage() {
   const coupons = user.coupons || [];
 
   return `
-    <section class="process-page">
+    <section class="process-page checkout-page">
       <div class="container">
         <div class="section-head">
           <p class="section-kicker">确认订单</p>
@@ -1050,11 +1094,10 @@ function checkoutPage() {
             <div class="panel">
               <div class="panel-head">
                 <h2>收货信息</h2>
-                <span class="muted">${addressBook.length ? "地址簿 / 新增地址" : "首次填写后自动保存"}</span>
+                <span class="muted">${addressBook.length ? "选择或新增收货地址" : "新增后自动保存"}</span>
               </div>
               <div class="panel-body">
-                ${renderAddressBook(addressBook, draft)}
-                ${isAddingAddress ? renderAddressForm(draft.address, addressBook.length ? "新增地址" : "新增收货地址") : ""}
+                ${renderCheckoutAddress(addressBook, draft)}
               </div>
             </div>
 
@@ -1123,6 +1166,7 @@ function checkoutPage() {
             </div>
           </aside>
         </div>
+        ${renderAddressModal(addressBook, draft)}
       </div>
     </section>
   `;
@@ -1734,6 +1778,9 @@ function applyAfterSales(orderId) {
 function render() {
   const route = getRoute();
   notice = notice || "";
+  if (route !== "/checkout") {
+    addressModalMode = null;
+  }
   updateHeader();
 
   if (route === "/") {
@@ -1874,6 +1921,30 @@ document.addEventListener("click", (event) => {
     render();
   }
 
+  if (action === "open-address-book") {
+    addressModalMode = "book";
+    notice = "";
+    render();
+  }
+
+  if (action === "open-address-new") {
+    const user = getCurrentUser();
+    const draft = getDraft();
+    if (!draft) return;
+    draft.address = emptyAddress(user);
+    draft.addressId = null;
+    draft.addressMode = "new";
+    saveDraft(draft);
+    addressModalMode = "new";
+    notice = "";
+    render();
+  }
+
+  if (action === "close-address-modal") {
+    addressModalMode = null;
+    render();
+  }
+
   if (action === "select-address") {
     const user = getCurrentUser();
     const draft = getDraft();
@@ -1884,6 +1955,7 @@ document.addEventListener("click", (event) => {
     draft.addressId = address.id;
     draft.addressMode = "book";
     saveDraft(draft);
+    addressModalMode = null;
     notice = "";
     render();
   }
@@ -1896,6 +1968,27 @@ document.addEventListener("click", (event) => {
     draft.addressId = null;
     draft.addressMode = "new";
     saveDraft(draft);
+    addressModalMode = "new";
+    notice = "";
+    render();
+  }
+
+  if (action === "save-address-modal") {
+    const draft = collectAddressFromPage();
+    if (!draft) return;
+    if (!isAddressComplete(draft.address)) {
+      notice = "请补充完整收货人、联系电话、省市区和具体地址。";
+      render();
+      return;
+    }
+    const savedAddress = saveAddressToBook(getCurrentUser(), draft.address, draft.addressId);
+    if (savedAddress) {
+      draft.address = normalizeAddress(savedAddress);
+      draft.addressId = savedAddress.id;
+      draft.addressMode = "book";
+      saveDraft(draft);
+    }
+    addressModalMode = null;
     notice = "";
     render();
   }
@@ -1905,6 +1998,7 @@ document.addEventListener("click", (event) => {
     if (!draft) return;
     if (!isAddressComplete(draft.address)) {
       notice = "请补充完整收货人、联系电话、省市区和具体地址后再支付。";
+      addressModalMode = "new";
       render();
       return;
     }

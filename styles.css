@@ -1122,6 +1122,18 @@ img {
   background: var(--surface);
 }
 
+.checkout-page {
+  padding: 36px 0 72px;
+}
+
+.checkout-page .section-head {
+  margin-bottom: 28px;
+}
+
+.checkout-page .section-kicker {
+  margin-bottom: 8px;
+}
+
 .process-grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 380px;
@@ -1288,6 +1300,14 @@ img {
   padding: 22px 26px;
 }
 
+.checkout-page .panel-head {
+  padding: 22px 26px 8px;
+}
+
+.checkout-page .panel-body {
+  padding: 14px 26px 26px;
+}
+
 .panel-head h2,
 .panel-head h3 {
   margin: 0;
@@ -1394,6 +1414,15 @@ img {
   gap: 12px;
 }
 
+.checkout-address-box {
+  display: grid;
+  gap: 14px;
+}
+
+.address-form {
+  gap: 14px;
+}
+
 .address-book + .address-form {
   margin-top: 22px;
   border-top: 1px solid var(--line);
@@ -1423,6 +1452,37 @@ img {
   width: 100%;
   color: var(--text-2);
   text-align: left;
+}
+
+.address-summary-card {
+  min-height: 82px;
+}
+
+.address-empty {
+  display: grid;
+  gap: 6px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 6px;
+  padding: 18px;
+  color: var(--text-3);
+  background: var(--surface);
+}
+
+.address-empty strong {
+  color: var(--title);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.address-empty span {
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.address-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .address-content {
@@ -1459,9 +1519,27 @@ img {
   margin-bottom: 0;
 }
 
+.address-row {
+  display: grid;
+  gap: 14px;
+}
+
+.address-row-contact {
+  grid-template-columns: minmax(180px, 0.38fr) minmax(0, 0.62fr);
+}
+
+.address-row-location {
+  grid-template-columns: minmax(0, 0.62fr) minmax(220px, 0.38fr);
+}
+
+.address-row .field,
+.address-row-note {
+  margin-bottom: 0;
+}
+
 .phone-field {
   display: grid;
-  grid-template-columns: 168px minmax(0, 1fr);
+  grid-template-columns: 150px minmax(0, 1fr);
   gap: 10px;
 }
 
@@ -1469,6 +1547,75 @@ img {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
+}
+
+.address-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.address-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.42);
+}
+
+.address-modal-panel {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: min(760px, calc(100vw - 48px));
+  max-height: calc(100vh - 64px);
+  border-radius: var(--radius);
+  background: #fff;
+  overflow: hidden;
+}
+
+.address-modal-head,
+.address-modal-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 26px;
+}
+
+.address-modal-head {
+  border-bottom: 1px solid var(--line);
+}
+
+.address-modal-head h2 {
+  margin: 4px 0 0;
+  color: var(--title);
+  font-size: 22px;
+  line-height: 30px;
+}
+
+.address-modal-close {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--text);
+  background: #fff;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.address-modal-body {
+  padding: 26px;
+  overflow-y: auto;
+}
+
+.address-modal-foot {
+  justify-content: flex-end;
+  border-top: 1px solid var(--line);
 }
 
 .muted {
@@ -1905,6 +2052,15 @@ img {
   color: var(--text-2);
 }
 
+.empty-state.compact {
+  padding: 30px;
+}
+
+.empty-state.compact h2 {
+  font-size: 20px;
+  line-height: 28px;
+}
+
 .site-footer {
   border-top: 1px solid var(--line);
   padding: 28px 0;
@@ -2140,6 +2296,8 @@ img {
   .option-grid,
   .order-card,
   .coupon-form,
+  .address-row-contact,
+  .address-row-location,
   .phone-field,
   .region-grid,
   .line-product {
@@ -2171,6 +2329,28 @@ img {
   .payment-card {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .address-actions,
+  .address-modal-head,
+  .address-modal-foot {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .address-modal {
+    padding: 16px;
+  }
+
+  .address-modal-panel {
+    width: min(343px, calc(100vw - 32px));
+    max-height: calc(100vh - 32px);
+  }
+
+  .address-modal-head,
+  .address-modal-body,
+  .address-modal-foot {
+    padding: 18px;
   }
 
   .sticky-buy-inner {
