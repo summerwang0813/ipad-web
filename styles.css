@@ -1118,19 +1118,15 @@ img {
 
 .process-page {
   min-height: calc(100vh - 64px);
-  padding: 72px 0 96px;
+  padding: 36px 0 72px;
   background: var(--surface);
 }
 
-.checkout-page {
-  padding: 36px 0 72px;
-}
-
-.checkout-page .section-head {
+.process-page .section-head {
   margin-bottom: 28px;
 }
 
-.checkout-page .section-kicker {
+.process-page .section-kicker {
   margin-bottom: 8px;
 }
 
@@ -1300,11 +1296,11 @@ img {
   padding: 22px 26px;
 }
 
-.checkout-page .panel-head {
+.process-page .panel-head {
   padding: 22px 26px 8px;
 }
 
-.checkout-page .panel-body {
+.process-page .panel-body {
   padding: 14px 26px 26px;
 }
 
