@@ -1239,52 +1239,55 @@ function helpPage() {
       <div class="container">
         <div class="help-hero">
           <p class="section-kicker">帮助中心</p>
-          <h1 class="section-title">从选购到售后，找到下一步。</h1>
-          <p class="section-desc">围绕版本选择、下单支付、订单状态和售后服务整理常见问题。已登录用户可通过右上角头像进入个人中心查看订单管理。</p>
+          <h1 class="section-title">iPad 购买支持。</h1>
+          <p class="section-desc">围绕 iPad 选购、配件兼容、付款发票、配送、退货退款和保修售后等常见购买问题，购买前后都能快速找到答案。</p>
           <div class="help-search" aria-label="帮助中心搜索入口">
-            <span>搜索订单、支付、优惠券、售后</span>
-            <a class="text-link" href="#/account">进入个人中心</a>
+            <span>搜索机型、配件、配送、退货、发票、保修</span>
+            <a class="text-link" href="#/orders">查看订单</a>
           </div>
         </div>
         <div class="help-action-grid">
-          <a class="help-action-card" href="#/">
-            <span class="help-action-index">01</span>
-            <strong>选择版本</strong>
-            <span>对比基础版和领航版，快速回到产品页。</span>
-          </a>
-          <a class="help-action-card" href="#/checkout">
-            <span class="help-action-index">02</span>
-            <strong>继续结算</strong>
-            <span>检查优惠券、配送信息和订单金额。</span>
-          </a>
           <a class="help-action-card" href="#/orders">
+            <span class="help-action-index">01</span>
+            <strong>选购建议</strong>
+            <span>对比屏幕、容量、续航和使用场景，选择适合的版本。</span>
+          </a>
+          <a class="help-action-card" href="#/help">
+            <span class="help-action-index">02</span>
+            <strong>配件兼容</strong>
+            <span>确认灵感笔、键盘保护套和充电配件是否匹配。</span>
+          </a>
+          <a class="help-action-card" href="#/help">
             <span class="help-action-index">03</span>
-            <strong>订单管理</strong>
-            <span>查看支付、发货、签收和售后状态。</span>
+            <strong>售后保障</strong>
+            <span>了解配送、退货、保修和售后申请的服务范围。</span>
           </a>
         </div>
         <div class="help-layout">
           <article class="panel help-main">
             <div class="panel-head">
-              <h2>购买流程</h2>
-              <span class="muted">4 个关键步骤</span>
+              <h2>常见购买问题</h2>
+              <span class="muted">6 个主题</span>
             </div>
             <div class="panel-body">
               <ol class="help-steps">
-                <li><strong>选择产品</strong><span>基础版 ¥5,999，领航版 ¥6,999。详情页仅保留版本和数量选择。</span></li>
-                <li><strong>登录或注册</strong><span>未登录下单会先进入登录流程，新用户完成注册后回到订单确认页。</span></li>
-                <li><strong>确认订单</strong><span>核对配送信息、优惠券、商品数量和应付金额。</span></li>
-                <li><strong>查看状态</strong><span>支付后进入个人中心的订单管理，展示待付款、待发货、待收货和已签收。</span></li>
+                <li><strong>机型怎么选</strong><span>基础版适合课堂、办公和家庭娱乐；领航版更适合多任务创作、绘图和高负载应用。</span></li>
+                <li><strong>配件兼容</strong><span>购买前请确认灵感笔、键盘保护套、支架和充电配件与所选 iPad 版本匹配。</span></li>
+                <li><strong>付款与发票</strong><span>支持常见在线支付方式，订单完成后可查看支付明细；发票会按订单与退款状态更新。</span></li>
+                <li><strong>配送服务</strong><span>根据库存和收货地址展示可用配送方式、预计送达时间和配送限制。</span></li>
+                <li><strong>退货退款</strong><span>符合条件的 iPad 可在收货后 14 天内申请退货，商品需保持完好并包含原包装和配件。</span></li>
+                <li><strong>保修与售后</strong><span>保留订单凭证可用于保修服务；发货后可在订单详情中发起售后或维修申请。</span></li>
               </ol>
             </div>
           </article>
           <aside class="help-side">
             <div class="panel help-contact">
-              <div class="panel-head"><h2>服务状态</h2></div>
+              <div class="panel-head"><h2>购买保障</h2></div>
               <div class="panel-body">
-                <div class="help-status-row"><span>未发货</span><strong>可取消订单</strong></div>
-                <div class="help-status-row"><span>已发货</span><strong>可申请售后</strong></div>
-                <div class="help-status-row"><span>已签收</span><strong>查看订单详情</strong></div>
+                <div class="help-status-row"><span>配送</span><strong>按地址显示预计送达</strong></div>
+                <div class="help-status-row"><span>退货</span><strong>收货后 14 天内可申请</strong></div>
+                <div class="help-status-row"><span>发票</span><strong>随订单状态更新</strong></div>
+                <div class="help-status-row"><span>售后</span><strong>凭订单享受保修</strong></div>
               </div>
             </div>
             <div class="panel help-contact">
