@@ -251,8 +251,8 @@ img {
   width: min(760px, 100%);
   margin: 18px auto 0;
   color: var(--text-2);
-  font-size: 20px;
-  line-height: 30px;
+  font-size: 17px;
+  line-height: 27px;
   font-weight: 400;
 }
 
@@ -328,8 +328,8 @@ img {
 .section-desc {
   margin: 18px 0 0;
   color: var(--text-2);
-  font-size: 18px;
-  line-height: 28px;
+  font-size: 15px;
+  line-height: 25px;
 }
 
 .product-grid {
@@ -522,10 +522,10 @@ img {
 
 .plan-copy p:not(.plan-badge) {
   width: min(620px, 100%);
-  margin: 26px 0 0;
+  margin: 22px 0 0;
   color: var(--text-2);
-  font-size: 20px;
-  line-height: 32px;
+  font-size: 16px;
+  line-height: 27px;
 }
 
 .plan-copy .product-card-meta {
@@ -1128,24 +1128,160 @@ img {
   align-items: start;
 }
 
-.help-grid {
+.help-hero {
+  margin-bottom: 28px;
+}
+
+.help-search {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  width: min(760px, 100%);
+  min-height: 58px;
+  margin-top: 26px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0 20px;
+  color: var(--text-3);
+  background: #fff;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.help-action-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.help-action-card {
+  display: grid;
+  gap: 10px;
+  min-height: 158px;
+  border-radius: var(--radius);
+  padding: 22px;
+  color: var(--text-2);
+  background: #fff;
+}
+
+.help-action-card:hover {
+  color: var(--text);
+}
+
+.help-action-card strong {
+  color: var(--title);
+  font-size: 18px;
+  line-height: 26px;
+}
+
+.help-action-card span:last-child {
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.help-action-index {
+  color: var(--brand);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 700;
+}
+
+.help-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 18px;
+  align-items: start;
+}
+
+.help-main {
+  min-height: 430px;
+}
+
+.help-steps {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.help-steps li {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: 24px;
+  border-bottom: 1px solid var(--line);
+  padding: 22px 0;
+}
+
+.help-steps li:first-child {
+  padding-top: 0;
+}
+
+.help-steps li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.help-steps strong {
+  color: var(--title);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.help-steps span {
+  color: var(--text-2);
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.help-side {
+  display: grid;
   gap: 18px;
 }
 
-.help-card {
+.help-status-row {
   display: flex;
-  min-height: 320px;
-  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 1px solid var(--line);
+  padding: 14px 0;
+  color: var(--text-3);
+  font-size: 14px;
+  line-height: 22px;
 }
 
-.help-card .panel-body {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 22px;
+.help-status-row:first-child {
+  padding-top: 0;
+}
+
+.help-status-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.help-status-row strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.help-link-list {
+  display: grid;
+  gap: 10px;
+}
+
+.help-link-list a {
+  border-radius: 6px;
+  padding: 11px 12px;
+  color: var(--text-2);
+  background: var(--surface);
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.help-link-list a:hover {
+  color: var(--text);
 }
 
 .panel {
@@ -1826,8 +1962,8 @@ img {
   }
 
   .section-desc {
-    font-size: 16px;
-    line-height: 26px;
+    font-size: 14px;
+    line-height: 23px;
   }
 
   .btn {
@@ -1839,7 +1975,8 @@ img {
 
   .product-grid,
   .feature-strip,
-  .help-grid,
+  .help-action-grid,
+  .help-layout,
   .purchase-plan-grid,
   .spec-compare,
   .detail-layout,
@@ -1867,8 +2004,8 @@ img {
   }
 
   .plan-copy p:not(.plan-badge) {
-    font-size: 16px;
-    line-height: 26px;
+    font-size: 15px;
+    line-height: 24px;
   }
 
   .spec-dark-head h2 {
@@ -1919,8 +2056,20 @@ img {
 
   .hero-subtitle,
   .page-subtitle {
-    font-size: 17px;
-    line-height: 26px;
+    font-size: 15px;
+    line-height: 24px;
+  }
+
+  .help-search,
+  .help-steps li,
+  .help-status-row {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .help-search {
+    padding: 14px 16px;
   }
 
   .product-card {

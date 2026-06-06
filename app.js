@@ -20,7 +20,7 @@ const products = {
     price: 5999,
     slogan: "把学习、记录和日常创作做得更轻。",
     intro:
-      "为课堂、办公和家庭娱乐准备的一台全能 iPad。11 英寸高清屏幕、全天续航和轻量机身，让阅读、批注、视频会议与手写笔记都更自然。",
+      "面向课堂、办公和家庭娱乐的一台全能 iPad。11 英寸高清屏、全天续航和轻量机身，让阅读、批注、会议和手写笔记更自然。",
     cardCopy:
       "轻薄机身搭配 11 英寸清透屏幕，适合学习、办公、追剧和日常创作。上手简单，预算友好，体验完整。",
     tags: ["11 英寸高清屏", "全天续航", "灵感笔支持"],
@@ -1237,45 +1237,65 @@ function helpPage() {
   return `
     <section class="process-page">
       <div class="container">
-        <div class="section-head">
+        <div class="help-hero">
           <p class="section-kicker">帮助中心</p>
-          <h1 class="section-title">购买、支付和订单问题，都在这里处理。</h1>
-          <p class="section-desc">围绕 iPad 选购、下单、优惠券、支付和售后状态整理常见问题。已登录用户可以从右上角头像进入个人中心查看订单管理。</p>
+          <h1 class="section-title">从选购到售后，找到下一步。</h1>
+          <p class="section-desc">围绕版本选择、下单支付、订单状态和售后服务整理常见问题。已登录用户可通过右上角头像进入个人中心查看订单管理。</p>
+          <div class="help-search" aria-label="帮助中心搜索入口">
+            <span>搜索订单、支付、优惠券、售后</span>
+            <a class="text-link" href="#/account">进入个人中心</a>
+          </div>
         </div>
-        <div class="help-grid">
-          <article class="panel help-card">
-            <div class="panel-head"><h2>选购与版本</h2></div>
+        <div class="help-action-grid">
+          <a class="help-action-card" href="#/">
+            <span class="help-action-index">01</span>
+            <strong>选择版本</strong>
+            <span>对比基础版和领航版，快速回到产品页。</span>
+          </a>
+          <a class="help-action-card" href="#/checkout">
+            <span class="help-action-index">02</span>
+            <strong>继续结算</strong>
+            <span>检查优惠券、配送信息和订单金额。</span>
+          </a>
+          <a class="help-action-card" href="#/orders">
+            <span class="help-action-index">03</span>
+            <strong>订单管理</strong>
+            <span>查看支付、发货、签收和售后状态。</span>
+          </a>
+        </div>
+        <div class="help-layout">
+          <article class="panel help-main">
+            <div class="panel-head">
+              <h2>购买流程</h2>
+              <span class="muted">4 个关键步骤</span>
+            </div>
             <div class="panel-body">
-              <ul class="info-list">
-                <li>基础版售价 ¥5,999，适合学习、办公和日常创作。</li>
-                <li>领航版售价 ¥6,999，适合高刷屏、多窗口和专业创作。</li>
-                <li>每个详情页只保留版本和数量选择，避免配置混淆。</li>
-              </ul>
-              <a class="text-link" href="#/">返回产品页</a>
+              <ol class="help-steps">
+                <li><strong>选择产品</strong><span>基础版 ¥5,999，领航版 ¥6,999。详情页仅保留版本和数量选择。</span></li>
+                <li><strong>登录或注册</strong><span>未登录下单会先进入登录流程，新用户完成注册后回到订单确认页。</span></li>
+                <li><strong>确认订单</strong><span>核对配送信息、优惠券、商品数量和应付金额。</span></li>
+                <li><strong>查看状态</strong><span>支付后进入个人中心的订单管理，展示待付款、待发货、待收货和已签收。</span></li>
+              </ol>
             </div>
           </article>
-          <article class="panel help-card">
-            <div class="panel-head"><h2>下单与支付</h2></div>
-            <div class="panel-body">
-              <ul class="info-list">
-                <li>未登录下单时会先进入登录或注册流程，完成后回到订单确认页。</li>
-                <li>结算页可选择优惠券，支付页会展示应付金额和支付明细。</li>
-                <li>提交支付后订单会自动进入个人中心的订单管理。</li>
-              </ul>
-              <a class="text-link" href="#/checkout">查看结算页</a>
+          <aside class="help-side">
+            <div class="panel help-contact">
+              <div class="panel-head"><h2>服务状态</h2></div>
+              <div class="panel-body">
+                <div class="help-status-row"><span>未发货</span><strong>可取消订单</strong></div>
+                <div class="help-status-row"><span>已发货</span><strong>可申请售后</strong></div>
+                <div class="help-status-row"><span>已签收</span><strong>查看订单详情</strong></div>
+              </div>
             </div>
-          </article>
-          <article class="panel help-card">
-            <div class="panel-head"><h2>订单与售后</h2></div>
-            <div class="panel-body">
-              <ul class="info-list">
-                <li>未发货前可以取消订单。</li>
-                <li>发货后可以在订单详情中申请售后。</li>
-                <li>待付款、待发货、待收货、已签收等状态会在订单管理中展示。</li>
-              </ul>
-              <a class="text-link" href="#/account">进入个人中心</a>
+            <div class="panel help-contact">
+              <div class="panel-head"><h2>常用入口</h2></div>
+              <div class="panel-body help-link-list">
+                <a href="#/account">个人中心</a>
+                <a href="#/orders">全部订单</a>
+                <a href="#/">返回产品页</a>
+              </div>
             </div>
-          </article>
+          </aside>
         </div>
       </div>
     </section>
