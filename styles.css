@@ -156,6 +156,42 @@ img {
   text-overflow: ellipsis;
 }
 
+.account-entry {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.header-actions .account-entry {
+  display: inline-flex;
+}
+
+.account-entry:hover .header-avatar {
+  background: var(--brand-hover);
+}
+
+.header-avatar {
+  display: grid;
+  flex: 0 0 24px;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--brand);
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 600;
+}
+
+.account-name {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .header-actions .text-link {
   flex: 0 0 auto;
   font-size: 14px;
@@ -1092,6 +1128,26 @@ img {
   align-items: start;
 }
 
+.help-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.help-card {
+  display: flex;
+  min-height: 320px;
+  flex-direction: column;
+}
+
+.help-card .panel-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 22px;
+}
+
 .panel {
   border: 0;
   border-radius: var(--radius);
@@ -1707,6 +1763,17 @@ img {
     max-width: min(180px, 42vw);
   }
 
+  .account-entry {
+    gap: 7px;
+  }
+
+  .header-avatar {
+    flex-basis: 22px;
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+  }
+
   .header-actions .text-link {
     order: 2;
   }
@@ -1762,6 +1829,7 @@ img {
 
   .product-grid,
   .feature-strip,
+  .help-grid,
   .purchase-plan-grid,
   .spec-compare,
   .detail-layout,

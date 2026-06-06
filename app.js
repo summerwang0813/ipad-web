@@ -387,8 +387,12 @@ function defaultAddress(user) {
 
 function updateHeader() {
   const user = getCurrentUser();
+  const initial = user?.name?.slice(0, 1) || "用";
   headerActions.innerHTML = user
-    ? `<a class="header-link" href="#/account">${esc(user.name)}</a><button class="text-link" data-action="logout">退出</button>`
+    ? `<a class="header-link account-entry" href="#/account" aria-label="进入个人中心">
+        <span class="header-avatar" aria-hidden="true">${esc(initial)}</span>
+        <span class="account-name">${esc(user.name)}</span>
+      </a><button class="text-link" data-action="logout">退出</button>`
     : `<a class="header-link" href="#/login">登录</a>`;
 }
 
@@ -1037,7 +1041,8 @@ function accountPage() {
           </div>
           <div class="panel">
             <div class="panel-head">
-              <h2>最近订单</h2>
+              <h2>订单管理</h2>
+              <span class="muted">${orders.length} 笔订单</span>
               <a class="text-link" href="#/orders">查看全部</a>
             </div>
             <div class="panel-body">
@@ -1222,6 +1227,55 @@ function successPage(orderId) {
         <div class="hero-cta">
           <a class="btn primary" href="#/orders">查看订单</a>
           <a class="btn secondary" href="#/">继续浏览 iPad</a>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function helpPage() {
+  return `
+    <section class="process-page">
+      <div class="container">
+        <div class="section-head">
+          <p class="section-kicker">帮助中心</p>
+          <h1 class="section-title">购买、支付和订单问题，都在这里处理。</h1>
+          <p class="section-desc">围绕 iPad 选购、下单、优惠券、支付和售后状态整理常见问题。已登录用户可以从右上角头像进入个人中心查看订单管理。</p>
+        </div>
+        <div class="help-grid">
+          <article class="panel help-card">
+            <div class="panel-head"><h2>选购与版本</h2></div>
+            <div class="panel-body">
+              <ul class="info-list">
+                <li>基础版售价 ¥5,999，适合学习、办公和日常创作。</li>
+                <li>领航版售价 ¥6,999，适合高刷屏、多窗口和专业创作。</li>
+                <li>每个详情页只保留版本和数量选择，避免配置混淆。</li>
+              </ul>
+              <a class="text-link" href="#/">返回产品页</a>
+            </div>
+          </article>
+          <article class="panel help-card">
+            <div class="panel-head"><h2>下单与支付</h2></div>
+            <div class="panel-body">
+              <ul class="info-list">
+                <li>未登录下单时会先进入登录或注册流程，完成后回到订单确认页。</li>
+                <li>结算页可选择优惠券，支付页会展示应付金额和支付明细。</li>
+                <li>提交支付后订单会自动进入个人中心的订单管理。</li>
+              </ul>
+              <a class="text-link" href="#/checkout">查看结算页</a>
+            </div>
+          </article>
+          <article class="panel help-card">
+            <div class="panel-head"><h2>订单与售后</h2></div>
+            <div class="panel-body">
+              <ul class="info-list">
+                <li>未发货前可以取消订单。</li>
+                <li>发货后可以在订单详情中申请售后。</li>
+                <li>待付款、待发货、待收货、已签收等状态会在订单管理中展示。</li>
+              </ul>
+              <a class="text-link" href="#/account">进入个人中心</a>
+            </div>
+          </article>
         </div>
       </div>
     </section>
@@ -1422,6 +1476,11 @@ function render() {
   if (route.startsWith("/success")) {
     const orderId = new URLSearchParams(route.split("?")[1] || "").get("order") || "";
     renderShell(successPage(orderId));
+    return;
+  }
+
+  if (route === "/help") {
+    renderShell(helpPage());
     return;
   }
 
