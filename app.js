@@ -184,6 +184,7 @@ let notice = "";
 const galleryIndexes = {};
 let lightboxProductId = null;
 let addressModalMode = null;
+let openSelectField = null;
 
 const app = document.querySelector("#app");
 const headerActions = document.querySelector("#headerActions");
@@ -577,11 +578,64 @@ function optionMarkup(options, selected) {
     .join("");
 }
 
+function selectOptionMarkup(field, options, selected) {
+  return options
+    .map((option) => {
+      const value = typeof option === "string" ? option : option.value;
+      const label = typeof option === "string" ? option : option.label;
+      const checked = value === selected;
+      return `
+        <button
+          type="button"
+          class="select-option ${checked ? "selected" : ""}"
+          data-action="select-option"
+          data-select-field="${esc(field)}"
+          data-select-value="${esc(value)}"
+        >
+          ${esc(label)}
+        </button>
+      `;
+    })
+    .join("");
+}
+
+function selectedOptionLabel(options, selected) {
+  const option = options.find((item) => (typeof item === "string" ? item : item.value) === selected);
+  if (!option) return selected || "请选择";
+  return typeof option === "string" ? option : option.label;
+}
+
+function renderSelectControl(field, selected, options, ariaLabel) {
+  const expanded = openSelectField === field;
+  return `
+    <div class="select-control ${expanded ? "open" : ""}">
+      <input type="hidden" data-draft-field="${esc(field)}" value="${esc(selected)}" />
+      <button
+        type="button"
+        class="select-trigger ${expanded ? "active" : ""}"
+        data-action="toggle-select"
+        data-select-field="${esc(field)}"
+        aria-label="${esc(ariaLabel)}"
+        aria-expanded="${expanded ? "true" : "false"}"
+      >
+        <span class="select-value">${esc(selectedOptionLabel(options, selected))}</span>
+      </button>
+      <div class="select-menu" role="listbox">
+        ${selectOptionMarkup(field, options, selected)}
+      </div>
+    </div>
+  `;
+}
+
 function renderAddressForm(address, title, options = {}) {
   const showHead = options.showHead !== false;
   const normalized = normalizeAddress(address);
   const provinceData = getProvinceData(normalized.province);
   const cityData = getCityData(normalized.province, normalized.city);
+  const phoneOptions = phoneCodeOptions.map((item) => ({ value: item.code, label: item.label }));
+  const provinceOptions = regionTree.map((item) => item.name);
+  const cityOptions = provinceData.cities.map((item) => item.name);
+  const districtOptions = cityData.districts;
   return `
     <div class="address-form">
       ${showHead ? `<div class="address-form-head"><strong>${title}</strong></div>` : ""}
@@ -593,11 +647,7 @@ function renderAddressForm(address, title, options = {}) {
         <div class="field">
           <label for="receiverPhone">联系电话</label>
           <div class="phone-field">
-            <select id="receiverPhoneCode" data-draft-field="phoneCode" aria-label="电话区号">
-              ${phoneCodeOptions
-                .map((item) => `<option value="${esc(item.code)}" ${item.code === normalized.phoneCode ? "selected" : ""}>${esc(item.label)}</option>`)
-                .join("")}
-            </select>
+            ${renderSelectControl("phoneCode", normalized.phoneCode, phoneOptions, "电话区号")}
             <input id="receiverPhone" data-draft-field="phone" value="${esc(normalized.phone)}" />
           </div>
         </div>
@@ -606,15 +656,9 @@ function renderAddressForm(address, title, options = {}) {
         <div class="field">
           <label>所在地区</label>
           <div class="region-grid">
-            <select data-draft-field="province" aria-label="省份">
-              ${optionMarkup(regionTree.map((item) => item.name), normalized.province)}
-            </select>
-            <select data-draft-field="city" aria-label="城市">
-              ${optionMarkup(provinceData.cities.map((item) => item.name), normalized.city)}
-            </select>
-            <select data-draft-field="district" aria-label="区县">
-              ${optionMarkup(cityData.districts, normalized.district)}
-            </select>
+            ${renderSelectControl("province", normalized.province, provinceOptions, "省份")}
+            ${renderSelectControl("city", normalized.city, cityOptions, "城市")}
+            ${renderSelectControl("district", normalized.district, districtOptions, "区县")}
           </div>
         </div>
         <div class="field">
@@ -1670,12 +1714,8 @@ function createOrder() {
   return order;
 }
 
-function collectAddressFromPage() {
-  const draft = getDraft();
+function persistAddressDraft(draft) {
   if (!draft) return null;
-  document.querySelectorAll("[data-draft-field]").forEach((field) => {
-    draft.address[field.dataset.draftField] = field.value.trim();
-  });
   draft.address = normalizeAddress(draft.address);
   const savedAddress = saveAddressToBook(getCurrentUser(), draft.address, draft.addressId);
   if (savedAddress) {
@@ -1685,6 +1725,34 @@ function collectAddressFromPage() {
   }
   saveDraft(draft);
   return draft;
+}
+
+function collectAddressFromPage() {
+  const draft = getDraft();
+  if (!draft) return null;
+  document.querySelectorAll("[data-draft-field]").forEach((field) => {
+    draft.address[field.dataset.draftField] = field.value.trim();
+  });
+  return persistAddressDraft(draft);
+}
+
+function updateDraftAddressField(field, value) {
+  const draft = getDraft();
+  if (!draft) return;
+  draft.address = normalizeAddress(draft.address);
+  if (field === "province") {
+    const provinceData = getProvinceData(value);
+    draft.address.province = provinceData.name;
+    draft.address.city = provinceData.cities[0].name;
+    draft.address.district = provinceData.cities[0].districts[0];
+  } else if (field === "city") {
+    const cityData = getCityData(draft.address.province, value);
+    draft.address.city = cityData.name;
+    draft.address.district = cityData.districts[0];
+  } else {
+    draft.address[field] = value;
+  }
+  persistAddressDraft(draft);
 }
 
 function applyCouponCode(code) {
@@ -1783,6 +1851,7 @@ function render() {
   notice = notice || "";
   if (route !== "/checkout") {
     addressModalMode = null;
+    openSelectField = null;
   }
   updateHeader();
 
@@ -1865,9 +1934,27 @@ document.addEventListener("input", (event) => {
 
 document.addEventListener("click", (event) => {
   const actionTarget = event.target.closest("[data-action]");
-  if (!actionTarget) return;
+  if (!actionTarget) {
+    if (openSelectField) {
+      openSelectField = null;
+      render();
+    }
+    return;
+  }
 
   const action = actionTarget.dataset.action;
+  if (action === "toggle-select") {
+    openSelectField = openSelectField === actionTarget.dataset.selectField ? null : actionTarget.dataset.selectField;
+    render();
+  }
+
+  if (action === "select-option") {
+    openSelectField = null;
+    updateDraftAddressField(actionTarget.dataset.selectField, actionTarget.dataset.selectValue);
+    notice = "";
+    render();
+  }
+
   if (action === "logout") {
     localStorage.removeItem(storageKeys.currentUser);
     navigate("/");
@@ -1926,6 +2013,7 @@ document.addEventListener("click", (event) => {
 
   if (action === "open-address-book") {
     addressModalMode = "book";
+    openSelectField = null;
     notice = "";
     render();
   }
@@ -1939,12 +2027,14 @@ document.addEventListener("click", (event) => {
     draft.addressMode = "new";
     saveDraft(draft);
     addressModalMode = "new";
+    openSelectField = null;
     notice = "";
     render();
   }
 
   if (action === "close-address-modal") {
     addressModalMode = null;
+    openSelectField = null;
     render();
   }
 
@@ -1959,6 +2049,7 @@ document.addEventListener("click", (event) => {
     draft.addressMode = "book";
     saveDraft(draft);
     addressModalMode = null;
+    openSelectField = null;
     notice = "";
     render();
   }
@@ -1972,6 +2063,7 @@ document.addEventListener("click", (event) => {
     draft.addressMode = "new";
     saveDraft(draft);
     addressModalMode = "new";
+    openSelectField = null;
     notice = "";
     render();
   }
@@ -1992,6 +2084,7 @@ document.addEventListener("click", (event) => {
       saveDraft(draft);
     }
     addressModalMode = null;
+    openSelectField = null;
     notice = "";
     render();
   }
@@ -2002,6 +2095,7 @@ document.addEventListener("click", (event) => {
     if (!isAddressComplete(draft.address)) {
       notice = "请补充完整收货人、联系电话、省市区和具体地址后再支付。";
       addressModalMode = "new";
+      openSelectField = null;
       render();
       return;
     }
