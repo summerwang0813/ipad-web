@@ -1,64 +1,46 @@
-# Web Figma Writeback
+# iPad Official Store Prototype
 
-`web-figma-writeback` contains a reusable Codex skill for writing generated or implemented websites back into Figma with high visual fidelity.
+This repository contains the standalone iPad ecommerce prototype.
 
-The skill focuses on one main workflow: use the running website as the source of truth, capture its real layout, then rebuild or update the matching Figma page while reusing the target file's component library, variables, text styles, icons, and image assets.
-
-## Skill
-
-Skill folder:
+The web-to-Figma writeback plugin has been moved out of this website project and now lives as an independent plugin package:
 
 ```text
-skills/figma-page-sync
+../web-figma-writeback
 ```
 
-Use it when you want Codex to:
+## Run
 
-- write any generated website back to Figma
-- keep Figma layout aligned with the real webpage
-- reuse existing Figma component libraries and variables
-- create fallback variables when no component library exists
-- create callable typography styles instead of hardcoding text layers
-- verify screenshots, images, icon alignment, button padding, and layout coordinates
-
-## Fallback Figma Foundation
-
-When the target Figma file has no usable component library, the skill creates a reusable foundation first:
-
-```text
-01 Base
-02 Semantic
-03 Spacing
-04 Typography
-```
-
-Typography is treated as reusable design-system surface. The skill should create and apply Figma text styles such as:
-
-```text
-04 Typography/Display/H1
-04 Typography/Body/Regular
-04 Typography/Button/Primary
-```
-
-## Install
-
-Copy the skill folder into your Codex skills directory:
+Serve this directory with any static file server, then open the local URL in a browser.
 
 ```bash
-mkdir -p ~/.codex/skills
-cp -R skills/figma-page-sync ~/.codex/skills/
+python3 -m http.server 4173
 ```
 
-Then restart or refresh Codex so the skill can be discovered.
-
-## Example Prompt
+Then open:
 
 ```text
-Use $figma-page-sync to write the current website back to Figma. Reuse the component library; if none exists, create 01 Base, 02 Semantic, 03 Spacing, and 04 Typography variables first.
+http://127.0.0.1:4173/
 ```
 
-## Included Helpers
+## Project Structure
 
-- `scripts/browser-page-capture.js`: browser-side capture snippet for route layout, text, images, CSS variables, and fixed/sticky elements.
-- `scripts/compare-layouts.mjs`: simple layout JSON comparison helper for coordinate checks.
+```text
+.
+├── app.js
+├── index.html
+├── styles.css
+├── assets/
+└── dji-official-site-design-style.md
+```
 
+## Scope
+
+- Product home page
+- Product detail pages
+- Checkout flow
+- Payment flow
+- Account center
+- Order management
+- Help center
+
+Plugin and Codex skill files should not be added back into this website repository.
