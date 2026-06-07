@@ -1415,6 +1415,22 @@ img {
   gap: 14px;
 }
 
+.address-panel-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 18px;
+  white-space: nowrap;
+}
+
+.address-panel-actions .text-link {
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.checkout-address-form {
+  display: grid;
+}
+
 .address-form {
   gap: 14px;
 }

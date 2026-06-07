@@ -335,7 +335,7 @@ function getAddressBook(user = getCurrentUser()) {
 function saveAddressBook(user, addresses) {
   if (!user) return;
   const books = getAddressBooks();
-  books[user.email] = addresses.slice(0, 8);
+  books[user.email] = addresses;
   writeJSON(storageKeys.addressBook, books);
 }
 
@@ -577,16 +577,14 @@ function optionMarkup(options, selected) {
     .join("");
 }
 
-function renderAddressForm(address, title) {
+function renderAddressForm(address, title, options = {}) {
+  const showHead = options.showHead !== false;
   const normalized = normalizeAddress(address);
   const provinceData = getProvinceData(normalized.province);
   const cityData = getCityData(normalized.province, normalized.city);
   return `
     <div class="address-form">
-      <div class="address-form-head">
-        <strong>${title}</strong>
-        <span class="muted">填写后提交订单会自动保存</span>
-      </div>
+      ${showHead ? `<div class="address-form-head"><strong>${title}</strong></div>` : ""}
       <div class="address-row address-row-contact">
         <div class="field">
           <label for="receiverName">收货人</label>
@@ -668,11 +666,7 @@ function renderCheckoutAddress(addressBook, draft) {
     <div class="checkout-address-box">
       ${hasAddress
         ? renderAddressCard({ ...draft.address, id: draft.addressId || "current" }, draft)
-        : `<div class="address-empty"><strong>还没有收货地址</strong><span>新增地址后可继续支付。</span></div>`}
-      <div class="address-actions">
-        <button class="btn secondary" data-action="open-address-book">地址簿</button>
-        <button class="btn ${hasAddress ? "secondary" : "primary"}" data-action="open-address-new">新增地址</button>
-      </div>
+        : `<div class="checkout-address-form">${renderAddressForm(draft.address, "新增地址", { showHead: false })}</div>`}
     </div>
   `;
 }
@@ -1063,7 +1057,7 @@ function checkoutPage() {
   }
 
   const addressBook = getAddressBook(user);
-  if (addressBook.length && draft.addressMode !== "new" && !draft.addressId && !isAddressComplete(draft.address)) {
+  if (addressBook.length && addressModalMode !== "new" && !draft.addressId && !isAddressComplete(draft.address)) {
     draft.address = normalizeAddress(addressBook[0]);
     draft.addressId = addressBook[0].id;
     draft.addressMode = "book";
@@ -1094,7 +1088,10 @@ function checkoutPage() {
             <div class="panel">
               <div class="panel-head">
                 <h2>收货信息</h2>
-                <span class="muted">${addressBook.length ? "选择或新增收货地址" : "新增后自动保存"}</span>
+                <div class="address-panel-actions">
+                  <button class="text-link" data-action="open-address-new">+新增</button>
+                  <button class="text-link" data-action="open-address-book">地址簿</button>
+                </div>
               </div>
               <div class="panel-body">
                 ${renderCheckoutAddress(addressBook, draft)}
@@ -1680,6 +1677,12 @@ function collectAddressFromPage() {
     draft.address[field.dataset.draftField] = field.value.trim();
   });
   draft.address = normalizeAddress(draft.address);
+  const savedAddress = saveAddressToBook(getCurrentUser(), draft.address, draft.addressId);
+  if (savedAddress) {
+    draft.address = normalizeAddress(savedAddress);
+    draft.addressId = savedAddress.id;
+    draft.addressMode = "book";
+  }
   saveDraft(draft);
   return draft;
 }
