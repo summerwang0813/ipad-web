@@ -5,7 +5,7 @@ This repository contains the standalone iPad ecommerce prototype.
 The web-to-Figma writeback plugin has been moved out of this website project and now lives as an independent plugin package:
 
 ```text
-../web-figma-writeback
+https://github.com/summerwang0813/web-figma-writeback
 ```
 
 ## Run
