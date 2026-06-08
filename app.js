@@ -20,15 +20,14 @@ const products = {
     price: 5999,
     slogan: "把学习、记录和日常创作做得更轻。",
     intro:
-      "面向课堂、办公和家庭娱乐的一台全能 iPad。11 英寸高清屏、全天续航和轻量机身，让阅读、批注、会议和手写笔记更自然。",
+      "方德智 AI 股票机是一款由人工智能驱动的一站式全球智能投资决策终端。平台提供全球行情、多品类快捷交易、智能量化辅助等全流程服务，打造出“行情 - 分析 - 决策 - 交易”的完整业务闭环。这里既有专业的投研支持，也有贴心服务相伴，是开展智能投资的必备工具。",
     cardCopy:
       "轻薄机身搭配 11 英寸清透屏幕，适合学习、办公、追剧和日常创作。上手简单，预算友好，体验完整。",
     tags: ["11 英寸高清屏", "全天续航", "灵感笔支持"],
     highlights: [
-      "11 英寸 Liquid 视网膜显示屏，文字锐利，色彩清爽。",
-      "A17 智能芯片，覆盖笔记、网课、轻剪辑和多任务处理。",
-      "横向前置摄像头，让视频会议和在线课堂更自然。",
-      "兼容灵感笔二代与轻薄键盘保护套，学习办公一台就够。"
+      "AI+投顾：资深投顾结合 AI 大模型，摆脱信息过载，精准识别关键信号。",
+      "AI+量化：机构级量化策略工具，精准辅助投资决策。",
+      "AI+交易：多款自动化交易工具，大幅提升交易效率。"
     ],
     metrics: [
       ["11 英寸", "清透全面屏"],
@@ -45,15 +44,14 @@ const products = {
     price: 6999,
     slogan: "为移动生产力和专业创作准备。",
     intro:
-      "更大的高刷显示屏、更强的 Pro 级芯片与更快的存储响应。适合设计师、视频创作者、项目经理和需要随时展开工作的专业用户。",
+      "方德智 AI 股票机是一款由人工智能驱动的一站式全球智能投资决策终端。平台提供全球行情、多品类快捷交易、智能量化辅助等全流程服务，打造出“行情 - 分析 - 决策 - 交易”的完整业务闭环。这里既有专业的投研支持，也有贴心服务相伴，是开展智能投资的必备工具。",
     cardCopy:
       "高刷屏幕、旗舰芯片和专业配件生态，为绘图、剪辑、3D 预览和多窗口办公提供更宽的创作余量。",
     tags: ["12.9 英寸高刷屏", "Pro 级芯片", "专业键盘支持"],
     highlights: [
-      "12.9 英寸 XDR 级高刷显示屏，画面更亮，滚动更顺。",
-      "M 系列领航芯片，处理多轨视频、设计稿和大型文件更从容。",
-      "四扬声器系统与录音棚级麦克风，适合远程协作和内容制作。",
-      "兼容磁吸键盘与灵感笔 Pro，快速切换触控、键盘和手写工作流。"
+      "AI+投顾：资深投顾结合 AI 大模型，摆脱信息过载，精准识别关键信号。",
+      "AI+量化：机构级量化策略工具，精准辅助投资决策。",
+      "AI+交易：多款自动化交易工具，大幅提升交易效率。"
     ],
     metrics: [
       ["12.9 英寸", "XDR 高刷屏"],
@@ -294,7 +292,7 @@ function normalizeAddress(address = {}) {
     city: structured ? cityData.name : "",
     district: structured ? district : "",
     detailAddress,
-    note: String(address.note || "").trim()
+    note: ""
   };
   normalized.address = structured ? composeAddress(normalized) : rawAddress;
   return normalized;
@@ -390,12 +388,12 @@ function isPendingPayment(order) {
 
 function canCancelOrder(order) {
   const status = orderFulfillmentStatus(order);
-  return status !== "已取消" && status !== "已发货" && status !== "已签收" && status !== "已完成" && !order.afterSalesStatus;
+  return status !== "已取消" && status !== "已发货" && status !== "待收货" && status !== "已签收" && status !== "已完成" && !order.afterSalesStatus;
 }
 
 function canApplyAfterSales(order) {
   const status = orderFulfillmentStatus(order);
-  return (status === "已发货" || status === "已签收" || status === "已完成") && order.status !== "已取消" && !order.afterSalesStatus;
+  return (status === "已发货" || status === "待收货" || status === "已签收" || status === "已完成") && order.status !== "已取消" && !order.afterSalesStatus;
 }
 
 function orderStatusText(order) {
@@ -404,10 +402,21 @@ function orderStatusText(order) {
   if (isPendingPayment(order)) return "待付款";
   const status = orderFulfillmentStatus(order);
   if (status === "待发货") return "待发货";
+  if (status === "待收货") return "待收货";
   if (status === "已发货") return "待收货";
   if (status === "已签收") return "已签收";
   if (status === "已完成") return "已完成";
   return order.status || status;
+}
+
+function statusPillClass(status) {
+  if (status === "待付款" || status === "待转账确认") return "status-warning";
+  if (status === "待发货") return "status-processing";
+  if (status === "待收货") return "status-info";
+  if (status === "已签收" || status === "已完成") return "status-complete";
+  if (status === "已取消") return "status-muted";
+  if (status === "售后处理中") return "status-danger";
+  return "status-neutral";
 }
 
 function getRoute() {
@@ -653,7 +662,7 @@ function renderAddressForm(address, title, options = {}) {
         </div>
       </div>
       <div class="address-row address-row-location">
-        <div class="field">
+        <div class="field address-region-field">
           <label>所在地区</label>
           <div class="region-grid">
             ${renderSelectControl("province", normalized.province, provinceOptions, "省份")}
@@ -661,14 +670,10 @@ function renderAddressForm(address, title, options = {}) {
             ${renderSelectControl("district", normalized.district, districtOptions, "区县")}
           </div>
         </div>
-        <div class="field">
-          <label for="receiverDetailAddress">具体地址</label>
-          <input id="receiverDetailAddress" data-draft-field="detailAddress" value="${esc(normalized.detailAddress)}" />
-        </div>
       </div>
-      <div class="field address-row-note">
-        <label for="receiverNote">配送备注</label>
-        <input id="receiverNote" data-draft-field="note" value="${esc(normalized.note)}" />
+      <div class="field address-detail-field">
+        <label for="receiverDetailAddress">具体地址</label>
+        <input id="receiverDetailAddress" data-draft-field="detailAddress" value="${esc(normalized.detailAddress)}" />
       </div>
     </div>
   `;
@@ -684,7 +689,6 @@ function renderAddressCard(address, draft, action = "") {
       <span class="address-content">
         <strong>${esc(normalized.name)} ${esc(formatPhone(normalized))}</strong>
         <span>${esc(formatAddress(normalized))}</span>
-        <small>${normalized.note ? esc(normalized.note) : "无配送备注"}</small>
       </span>
       <span class="address-tag">${tag}</span>
     </${action ? "button" : "div"}>
@@ -1318,7 +1322,7 @@ function paymentPage() {
                         <strong>${method.name}</strong>
                         <span class="muted">${method.desc}</span>
                       </span>
-                      <span class="status-pill">${draft.paymentMethod === method.id ? "已选择" : "可选"}</span>
+                      ${draft.paymentMethod === method.id ? `<span class="status-pill status-selected">已选择</span>` : ""}
                     </button>
                   `
                   )
@@ -1459,10 +1463,11 @@ function ordersPage(orderId) {
 }
 
 function orderCard(order) {
+  const status = orderStatusText(order);
   return `
     <div class="order-card">
       <div>
-        <span class="status-pill">${orderStatusText(order)}</span>
+        <span class="status-pill ${statusPillClass(status)}">${status}</span>
         <h3>${order.productName}</h3>
         <p class="order-meta">订单号：${order.id} · ${order.createdAt} · 实付 ${money(order.total)}</p>
       </div>
@@ -1484,14 +1489,9 @@ function orderDetailPage(order) {
           <h1 class="section-title">${order.productName}</h1>
           <p class="section-desc">订单号 ${order.id} · ${orderStatusText(order)}</p>
         </div>
+        ${orderStatusSteps(order)}
         <div class="process-grid">
           <div>
-            <div class="panel">
-              <div class="panel-head"><h2>订单进度</h2></div>
-              <div class="panel-body">
-                ${orderStatusSteps(order)}
-              </div>
-            </div>
             <div class="panel">
               <div class="panel-head"><h2>商品配置</h2></div>
               <div class="panel-body">
@@ -1514,7 +1514,6 @@ function orderDetailPage(order) {
                   <li>收货人：${esc(order.address.name)}</li>
                   <li>联系电话：${esc(formatPhone(order.address))}</li>
                   <li>地址：${esc(formatAddress(order.address))}</li>
-                  <li>备注：${esc(order.address.note)}</li>
                   <li>物流状态：${order.logistics}</li>
                   <li>履约状态：${orderFulfillmentStatus(order)}</li>
                   ${order.afterSalesStatus ? `<li>售后状态：${order.afterSalesStatus}</li>` : ""}
@@ -1542,19 +1541,41 @@ function orderDetailPage(order) {
 function orderStatusSteps(order) {
   const current = orderStatusText(order);
   if (current === "已取消") {
-    return `<div class="order-status-steps single"><span class="order-step current">已取消</span></div>`;
+    return `
+      <div class="order-progress-global">
+        <div class="order-progress-head">
+          <strong>订单进度</strong>
+          <span class="status-pill ${statusPillClass(current)}">${current}</span>
+        </div>
+        <ol class="order-status-steps single">
+          <li class="order-step current"><span class="order-step-dot"></span><span>已取消</span></li>
+        </ol>
+      </div>
+    `;
   }
   const steps = ["待付款", "待发货", "待收货", "已签收"];
-  const activeIndex = Math.max(0, steps.indexOf(current));
+  const fulfillmentStatus = orderFulfillmentStatus(order);
+  const timelineCurrent = current === "售后处理中"
+    ? (fulfillmentStatus === "已发货" ? "待收货" : fulfillmentStatus)
+    : current;
+  const activeIndex = Math.max(0, steps.indexOf(timelineCurrent));
   return `
-    <div class="order-status-steps">
+    <div class="order-progress-global">
+      <div class="order-progress-head">
+        <strong>订单进度</strong>
+        <span class="status-pill ${statusPillClass(current)}">${current}</span>
+      </div>
+      <ol class="order-status-steps">
       ${steps
         .map((step, index) => {
-          const state = index < activeIndex ? "done" : index === activeIndex ? "current" : "";
-          return `<span class="order-step ${state}">${step}</span>`;
+          const state = order.afterSalesStatus
+            ? (index <= activeIndex ? "done" : "")
+            : (index < activeIndex ? "done" : index === activeIndex ? "current" : "");
+          return `<li class="order-step ${state}"><span class="order-step-dot"></span><span>${step}</span></li>`;
         })
         .join("")}
-      ${order.afterSalesStatus ? `<span class="order-step current">售后处理中</span>` : ""}
+      ${order.afterSalesStatus ? `<li class="order-step current"><span class="order-step-dot"></span><span>售后处理中</span></li>` : ""}
+      </ol>
     </div>
   `;
 }
