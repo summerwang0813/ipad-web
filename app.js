@@ -139,10 +139,8 @@ const specRows = [
 ];
 
 const paymentMethods = [
-  { id: "alipay", name: "支付宝", desc: "即时到账，适合个人订单" },
-  { id: "wechat", name: "微信支付", desc: "支持零钱、银行卡和分期入口" },
-  { id: "unionpay", name: "银联云闪付", desc: "支持主流储蓄卡与信用卡" },
-  { id: "company", name: "企业转账", desc: "提交后保留 24 小时订单库存" }
+  { id: "tonglian", name: "通联支付", desc: "支持零钱、银行卡和分期入口" },
+  { id: "fps", name: "FPS数转快", desc: "支持主流储蓄卡与信用卡" }
 ];
 
 const phoneCodeOptions = [
@@ -1347,7 +1345,7 @@ function createCheckoutDraft(productId) {
     productId: product.id,
     selection,
     couponId: null,
-    paymentMethod: "alipay",
+    paymentMethod: "tonglian",
     address: checkoutDefaultAddress(user),
     addressId: firstAddress?.id || null,
     addressMode: firstAddress ? "book" : "new"
@@ -1491,6 +1489,94 @@ function summaryRows(subtotal, discount, total) {
     <div class="summary-row"><span>标准配送</span><span>免费</span></div>
     <div class="summary-row"><span>优惠抵扣</span><span class="discount">-${money(discount)}</span></div>
     <div class="summary-row total"><span>应付金额</span><span>${money(total)}</span></div>
+  `;
+}
+
+function moneyExact(value) {
+  return `¥${Number(value || 0).toFixed(2)}`;
+}
+
+function paymentMethodIcon(id) {
+  if (id === "fps") {
+    return `
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="payment-icon payment-icon-fps">
+        <rect x="3" y="8" width="18" height="9" rx="4.5" fill="#e8f1ff"/>
+        <path d="M6.2 12.5h5.1c1.4 0 2.2-1.6 1.4-2.7m-1.4 4.4H17c1.4 0 2.2-1.6 1.4-2.7" fill="none" stroke="#1f6fd2" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M8.2 10.2 6 12.5l2.2 2.3M15.8 9.2l2.2 2.3-2.2 2.3" fill="none" stroke="#1f6fd2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    `;
+  }
+  return `
+    <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="payment-icon payment-icon-tonglian">
+      <path d="M12 2.5v6.3M12 15.2v6.3M2.5 12h6.3M15.2 12h6.3" fill="none" stroke="#389e38" stroke-width="1.7" stroke-linecap="round"/>
+      <path d="m5.3 5.3 4.5 4.5M14.2 14.2l4.5 4.5M18.7 5.3l-4.5 4.5M9.8 14.2l-4.5 4.5" fill="none" stroke="#f4b33f" stroke-width="1.7" stroke-linecap="round"/>
+      <circle cx="12" cy="12" r="2.7" fill="#389e38"/>
+    </svg>
+  `;
+}
+
+function commerceFooter() {
+  return `
+    <footer class="commerce-footer" aria-label="购买保障">
+      <div class="commerce-footer-inner">
+        <div class="footer-service-row">
+          <div class="footer-service-item">
+            <span class="footer-service-icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32"><path d="M4 9h14v13H4zM18 14h5l5 5v3H18zM9 25a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM23 25a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+            </span>
+            <strong>运费险</strong>
+            <span>商家发货后生效</span>
+          </div>
+          <div class="footer-service-item">
+            <span class="footer-service-icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32"><path d="M8 7h16v18H8zM12 11h8M12 16h8M12 21h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <strong>7天无理由退货</strong>
+            <span>全部商品可享</span>
+          </div>
+          <div class="footer-service-item">
+            <span class="footer-service-icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32"><path d="M13 8a5 5 0 0 1 5 5v2a3 3 0 0 1-3 3h-2v-5h5M11 22c2.3 2.5 5.4 3.4 9 3.4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <strong>号码保护</strong>
+            <span>隐藏手机号，保护隐私</span>
+          </div>
+        </div>
+        <div class="footer-brand-row">
+          <strong>方德AI股票機</strong>
+          <a href="#/">首页</a>
+          <a href="#/help">帮助中心</a>
+        </div>
+        <p class="footer-risk">本网站上的任何内容均不可视为购买或出售证券或其他投资产品的一种建议或招揽。任何信息及数据仅提供投资者参考，所有历史数据均不可视为对未来走势的判断依据。投资者应仔细了解产品相关金融产品，明确其风险因素及自身的风险承受力，或寻专业的投资顾问的建议。投资有风险，入市需谨慎。</p>
+        <div class="footer-meta-row">
+          <span>语言切换 · 简体中文</span>
+          <span>Copyright © 2026方德证券，版权所有</span>
+        </div>
+      </div>
+    </footer>
+  `;
+}
+
+function fpsPaymentModal(total) {
+  return `
+    <div class="payment-modal" role="dialog" aria-modal="true" aria-label="FPS数转快支付">
+      <div class="payment-modal-backdrop"></div>
+      <div class="fps-modal-card">
+        <div class="fps-modal-amount">
+          <strong>${moneyExact(total)}</strong>
+          <span>支付金额</span>
+        </div>
+        <div class="fps-transfer-box">
+          <div class="fps-transfer-head">
+            <strong>FPS数转快</strong>
+            <span>快速到账 · 0手续费</span>
+          </div>
+          <p>请使用您本人的银行账户进行转账<br />用银行APP扫描下方万泰金控的QR code收款码进行转账</p>
+          <img src="./assets/fps-qr.png" alt="FPS数转快收款二维码" />
+        </div>
+        <button class="btn primary fps-upload-btn" data-action="upload-payment-voucher">上传凭证</button>
+      </div>
+    </div>
   `;
 }
 
@@ -1653,20 +1739,27 @@ function paymentPage() {
   const discount = draftDiscount(draft, user);
   const total = draftTotal(draft, user);
   const product = products[draft.productId];
+  let selectedMethod = paymentMethods.find((method) => method.id === draft.paymentMethod);
+  if (!selectedMethod) {
+    selectedMethod = paymentMethods[0];
+    draft.paymentMethod = selectedMethod.id;
+    saveDraft(draft);
+  }
+  const params = new URLSearchParams(getRoute().split("?")[1] || "");
+  const showFpsModal = params.get("fps") === "1" && selectedMethod.id === "fps";
 
   return `
-    <section class="process-page">
+    <section class="process-page payment-page">
       <div class="container">
         <div class="section-head">
           <p class="section-kicker">支付订单</p>
-          <h1 class="section-title">选择支付方式。</h1>
+          <h1 class="section-title">选择支付方式</h1>
           <p class="section-desc">${product.name} 已为你保留 30 分钟。完成支付后，订单会进入个人中心。</p>
         </div>
         <div class="process-grid">
           <div class="panel">
             <div class="panel-head">
               <h2>支付方式</h2>
-              <span class="muted">模拟支付链路</span>
             </div>
             <div class="panel-body">
               <div class="payment-grid">
@@ -1674,9 +1767,12 @@ function paymentPage() {
                   .map(
                     (method) => `
                     <button class="payment-card ${draft.paymentMethod === method.id ? "selected" : ""}" data-action="payment-method" data-method="${method.id}">
-                      <span>
-                        <strong>${method.name}</strong>
-                        <span class="muted">${method.desc}</span>
+                      <span class="payment-card-main">
+                        ${paymentMethodIcon(method.id)}
+                        <span>
+                          <strong>${method.name}</strong>
+                          <span class="muted">${method.desc}</span>
+                        </span>
                       </span>
                       ${draft.paymentMethod === method.id ? `<span class="status-pill status-selected">已选择</span>` : ""}
                     </button>
@@ -1686,14 +1782,113 @@ function paymentPage() {
               </div>
             </div>
           </div>
-          <aside class="panel summary-panel">
+          <aside class="panel summary-panel payment-summary-panel">
             <div class="panel-head">
               <h3>支付明细</h3>
             </div>
             <div class="panel-body">
               ${summaryRows(subtotal, discount, total)}
               <button class="btn primary full" data-action="pay-submit">确认支付 ${money(total)}</button>
-              <p class="message">这是原型支付，不会发起真实扣款。</p>
+            </div>
+          </aside>
+        </div>
+      </div>
+      ${commerceFooter()}
+      ${showFpsModal ? fpsPaymentModal(total) : ""}
+    </section>
+  `;
+}
+
+function paymentStatusPage(type, orderId = "") {
+  const isFailed = type === "failed";
+  return `
+    <section class="payment-status-page ${isFailed ? "payment-status-failed" : "payment-status-success"}">
+      <div class="payment-status-card">
+        <div class="payment-status-mark" aria-hidden="true">
+          ${
+            isFailed
+              ? `<svg viewBox="0 0 32 32"><path d="M10 10l12 12M22 10 10 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="16" cy="16" r="10" fill="none" stroke="currentColor" stroke-width="2"/></svg>`
+              : `<svg viewBox="0 0 32 32"><path d="m9 16 5 5 9-10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+          }
+        </div>
+        <div class="payment-status-copy">
+          <p class="section-kicker">${isFailed ? "支付失败" : "支付成功"}</p>
+          <h1>${isFailed ? "支付失败" : "订单已提交"}</h1>
+          <p>${
+            isFailed
+              ? "很抱歉，支付未成功，订单未产生任何扣款。您可以重新发起支付或更换支付方式。"
+              : `我们已经生成订单 ${esc(orderId || "")}。你可以在个人中心的订单管理中查看订单状态、配置和配送信息。`
+          }</p>
+        </div>
+        <div class="payment-status-actions">
+          ${
+            isFailed
+              ? `<a class="btn primary" href="#/payment">重新支付</a><a class="btn secondary" href="#/orders">查看订单</a>`
+              : `<a class="btn primary" href="#/orders">查看订单</a>`
+          }
+        </div>
+      </div>
+      ${commerceFooter()}
+    </section>
+  `;
+}
+
+function successPage(orderId) {
+  return paymentStatusPage("success", orderId);
+}
+
+function paymentFailedPage() {
+  return paymentStatusPage("failed");
+}
+
+function helpPage() {
+  return `
+    <section class="process-page">
+      <div class="container">
+        <div class="help-hero">
+          <p class="section-kicker">帮助中心</p>
+          <h1 class="section-title">方德AI股票机购买支持。</h1>
+          <p class="section-desc">围绕服务方案、付款发票、配送、退货退款和售后服务等常见购买问题，购买前后都能快速找到答案。</p>
+        </div>
+        <div class="help-action-grid">
+          <a class="help-action-card" href="#/orders">
+            <span class="help-action-index">01</span>
+            <strong>方案选择</strong>
+            <span>对比基础版、白银、黄金、铂金、钻石和黑钻会员服务。</span>
+          </a>
+          <a class="help-action-card" href="#/checkout">
+            <span class="help-action-index">02</span>
+            <strong>配送与地址</strong>
+            <span>确认香港、内地及其他地区的配送信息和地址要求。</span>
+          </a>
+          <a class="help-action-card" href="#/orders">
+            <span class="help-action-index">03</span>
+            <strong>订单与售后</strong>
+            <span>查看订单状态、取消订单、发货后申请售后。</span>
+          </a>
+        </div>
+        <div class="help-layout">
+          <article class="panel help-main">
+            <div class="panel-head">
+              <h2>常见问题</h2>
+            </div>
+            <div class="panel-body">
+              <ul class="help-steps">
+                <li><strong>服务方案怎么选？</strong><span>基础版适合入门研究和日常行情查看；高阶会员服务覆盖更深度的投研咨询、AI决策和专属服务。</span></li>
+                <li><strong>付款与发票</strong><span>支持常见在线支付方式，订单完成后可查看支付明细；发票会按订单与退款状态更新。</span></li>
+                <li><strong>配送范围</strong><span>香港地区默认使用本地配送，其他地区会在下单页根据收货地址确认配送信息。</span></li>
+                <li><strong>退货与售后</strong><span>未发货前可取消订单；发货后可在订单详情发起售后申请。</span></li>
+              </ul>
+            </div>
+          </article>
+          <aside class="help-side">
+            <div class="panel help-contact">
+              <div class="panel-head"><h2>购买保障</h2></div>
+              <div class="panel-body">
+                <div class="help-status-row"><span>运费险</span><strong>商家发货后生效</strong></div>
+                <div class="help-status-row"><span>退货政策</span><strong>7天无理由退货</strong></div>
+                <div class="help-status-row"><span>隐私保护</span><strong>号码保护</strong></div>
+              </div>
             </div>
           </aside>
         </div>
@@ -1952,83 +2147,6 @@ function orderActionButtons(order) {
   return "";
 }
 
-function successPage(orderId) {
-  return `
-    <section class="success-page">
-      <div class="success-card">
-        <div class="success-mark">✓</div>
-        <p class="section-kicker">支付成功</p>
-        <h1 class="page-title">订单已提交。</h1>
-        <p class="page-subtitle">我们已经生成订单 ${esc(orderId || "")}。你可以在个人中心的订单管理中查看订单状态、配置和配送信息。</p>
-        <div class="hero-cta">
-          <a class="btn primary" href="#/orders">查看订单</a>
-          <a class="btn secondary" href="#/">继续浏览产品</a>
-        </div>
-      </div>
-    </section>
-  `;
-}
-
-function helpPage() {
-  return `
-    <section class="process-page">
-      <div class="container">
-        <div class="help-hero">
-          <p class="section-kicker">帮助中心</p>
-          <h1 class="section-title">方德AI股票机购买支持。</h1>
-          <p class="section-desc">围绕服务方案、付款发票、配送、退货退款和售后服务等常见购买问题，购买前后都能快速找到答案。</p>
-        </div>
-        <div class="help-action-grid">
-          <a class="help-action-card" href="#/orders">
-            <span class="help-action-index">01</span>
-            <strong>方案选择</strong>
-            <span>对比基础版、白银、黄金、铂金、钻石和黑钻会员服务。</span>
-          </a>
-          <a class="help-action-card" href="#/help">
-            <span class="help-action-index">02</span>
-            <strong>服务权益</strong>
-            <span>确认投顾服务、量化工具和活动赠送学习机的适用范围。</span>
-          </a>
-          <a class="help-action-card" href="#/help">
-            <span class="help-action-index">03</span>
-            <strong>售后保障</strong>
-            <span>了解配送、退货、保修和售后申请的服务范围。</span>
-          </a>
-        </div>
-        <div class="help-layout">
-          <article class="panel help-main">
-            <div class="panel-head">
-              <h2>常见购买问题</h2>
-              <span class="muted">6 个主题</span>
-            </div>
-            <div class="panel-body">
-              <ol class="help-steps">
-                <li><strong>方案怎么选</strong><span>基础版适合先体验 AI 投研终端；会员方案适合需要投顾、量化与交易服务的用户。</span></li>
-                <li><strong>服务权益</strong><span>购买前请确认会员等级、服务周期、活动赠送设备和投研支持范围。</span></li>
-                <li><strong>付款与发票</strong><span>支持常见在线支付方式，订单完成后可查看支付明细；发票会按订单与退款状态更新。</span></li>
-                <li><strong>配送服务</strong><span>根据库存和收货地址展示可用配送方式、预计送达时间和配送限制。</span></li>
-                <li><strong>退货退款</strong><span>符合条件的设备可在收货后 14 天内申请退货，商品需保持完好并包含原包装和配件。</span></li>
-                <li><strong>保修与售后</strong><span>保留订单凭证可用于保修服务；发货后可在订单详情中发起售后或维修申请。</span></li>
-              </ol>
-            </div>
-          </article>
-          <aside class="help-side">
-            <div class="panel help-contact">
-              <div class="panel-head"><h2>购买保障</h2></div>
-              <div class="panel-body">
-                <div class="help-status-row"><span>配送</span><strong>按地址显示预计送达</strong></div>
-                <div class="help-status-row"><span>退货</span><strong>收货后 14 天内可申请</strong></div>
-                <div class="help-status-row"><span>发票</span><strong>随订单状态更新</strong></div>
-                <div class="help-status-row"><span>售后</span><strong>凭订单享受保修</strong></div>
-              </div>
-            </div>
-          </aside>
-        </div>
-      </div>
-    </section>
-  `;
-}
-
 function emptyPage(title, desc, href, actionText) {
   return `
     <section class="process-page">
@@ -2073,7 +2191,7 @@ function createOrder() {
     couponId: draft.couponId,
     paymentMethod: payment.id,
     paymentName: payment.name,
-    status: payment.id === "company" ? "待转账确认" : "已支付",
+    status: "已支付",
     fulfillmentStatus: "待发货",
     logistics: "仓库处理中，预计 24 小时内发货",
     createdAt: new Date().toLocaleString("zh-CN", {
@@ -2266,6 +2384,16 @@ function render() {
 
   if (route === "/payment") {
     renderShell(paymentPage());
+    return;
+  }
+
+  if (route.startsWith("/payment?")) {
+    renderShell(paymentPage());
+    return;
+  }
+
+  if (route === "/payment-failed") {
+    renderShell(paymentFailedPage());
     return;
   }
 
@@ -2556,10 +2684,22 @@ document.addEventListener("click", (event) => {
     if (!draft) return;
     draft.paymentMethod = actionTarget.dataset.method;
     saveDraft(draft);
-    render();
+    navigate("/payment");
   }
 
   if (action === "pay-submit") {
+    const draft = getDraft();
+    if (draft?.paymentMethod === "fps") {
+      navigate("/payment?fps=1");
+      return;
+    }
+    const order = createOrder();
+    if (order) {
+      navigate(`/success?order=${order.id}`);
+    }
+  }
+
+  if (action === "upload-payment-voucher") {
     const order = createOrder();
     if (order) {
       navigate(`/success?order=${order.id}`);
