@@ -12,105 +12,129 @@ const pilotGalleryImages = [
   { src: "./assets/ipad-pilot-back.png", label: "背面细节" }
 ];
 
-const products = {
-  base: {
-    id: "base",
-    name: "iPad 基础版",
-    badge: "轻盈入门",
-    price: 5999,
-    slogan: "把学习、记录和日常创作做得更轻。",
-    intro:
-      "方德智 AI 股票机是一款由人工智能驱动的一站式全球智能投资决策终端。平台提供全球行情、多品类快捷交易、智能量化辅助等全流程服务，打造出“行情 - 分析 - 决策 - 交易”的完整业务闭环。这里既有专业的投研支持，也有贴心服务相伴，是开展智能投资的必备工具。",
-    cardCopy:
-      "轻薄机身搭配 11 英寸清透屏幕，适合学习、办公、追剧和日常创作。上手简单，预算友好，体验完整。",
-    tags: ["11 英寸高清屏", "全天续航", "灵感笔支持"],
-    highlights: [
-      "AI+投顾：资深投顾结合 AI 大模型，摆脱信息过载，精准识别关键信号。",
-      "AI+量化：机构级量化策略工具，精准辅助投资决策。",
-      "AI+交易：多款自动化交易工具，大幅提升交易效率。"
-    ],
-    metrics: [
-      ["11 英寸", "清透全面屏"],
-      ["477 克", "轻量随身"],
-      ["10 小时", "典型使用续航"],
-      ["灵感笔", "手写批注支持"]
-    ],
-    optionGroups: []
+const membershipOptions = [
+  {
+    id: "stock-basic",
+    name: "方德AI股票机 基础版",
+    desc: "裸机-无投顾服务",
+    price: 5880
   },
-  pilot: {
-    id: "pilot",
-    name: "iPad 领航版",
-    badge: "创作旗舰",
-    price: 6999,
-    slogan: "为移动生产力和专业创作准备。",
+  {
+    id: "silver-half",
+    name: "白银会员（半年）",
+    desc: "基础版学习机（活动赠送）",
+    price: 8800
+  },
+  {
+    id: "gold-half",
+    name: "黄金会员（半年）",
+    desc: "基础版学习机（活动赠送）",
+    price: 28800
+  },
+  {
+    id: "platinum-half",
+    name: "铂金会员（半年）",
+    desc: "基础版学习机（活动赠送）",
+    price: 58800
+  },
+  {
+    id: "diamond-half",
+    name: "钻石会员（半年）",
+    desc: "基础版学习机（活动赠送）",
+    price: 99800
+  },
+  {
+    id: "black-diamond-half",
+    name: "黑钻会员（半年）",
+    desc: "基础版学习机（活动赠送）",
+    price: 168800
+  }
+];
+
+function stockProduct(id, galleryTone = "base") {
+  return {
+    id,
+    name: "方德AI股票机",
+    badge: "极智终端",
+    price: 5880,
+    slogan: "全球行情随身掌控，AI辅助智能决策。",
     intro:
-      "方德智 AI 股票机是一款由人工智能驱动的一站式全球智能投资决策终端。平台提供全球行情、多品类快捷交易、智能量化辅助等全流程服务，打造出“行情 - 分析 - 决策 - 交易”的完整业务闭环。这里既有专业的投研支持，也有贴心服务相伴，是开展智能投资的必备工具。",
+      "方德AI股票机，全球行情随身掌控，AI辅助智能决策，助您轻松实现行情到交易的一站式闭环。",
     cardCopy:
-      "高刷屏幕、旗舰芯片和专业配件生态，为绘图、剪辑、3D 预览和多窗口办公提供更宽的创作余量。",
-    tags: ["12.9 英寸高刷屏", "Pro 级芯片", "专业键盘支持"],
+      "由人工智能驱动的一站式全球智能投资决策终端，覆盖行情、分析、决策与交易的完整链路。",
+    tags: ["AI+投顾", "AI+量化", "AI+交易"],
     highlights: [
-      "AI+投顾：资深投顾结合 AI 大模型，摆脱信息过载，精准识别关键信号。",
-      "AI+量化：机构级量化策略工具，精准辅助投资决策。",
-      "AI+交易：多款自动化交易工具，大幅提升交易效率。"
+      {
+        title: "AI+投顾",
+        desc: "资深投顾结合AI大模型，摆脱信息过载，精准识别关键信号。"
+      },
+      {
+        title: "AI+量化",
+        desc: "机构级量化策略工具，精准辅助投资决策。"
+      },
+      {
+        title: "AI+交易",
+        desc: "多款自动化交易工具，大幅提升交易效率。"
+      }
     ],
     metrics: [
-      ["12.9 英寸", "XDR 高刷屏"],
-      ["高速存储", "创作项目空间"],
-      ["M 系列", "领航芯片"],
-      ["四扬声器", "沉浸影音"]
+      ["12.1 吋", "2.5K 高清大屏"],
+      ["90Hz", "流畅刷新率"],
+      ["5G 芯片", "强劲性能"],
+      ["10200mAh", "长效续航"]
     ],
-    optionGroups: []
-  }
+    galleryTone,
+    optionGroups: [
+      {
+        key: "version",
+        title: "选择版本",
+        hint: "按会员服务体系选择适合的方案。",
+        options: membershipOptions
+      }
+    ]
+  };
+}
+
+const products = {
+  base: stockProduct("base", "base"),
+  pilot: stockProduct("pilot", "pilot")
 };
 
 const specRows = [
   {
-    icon: "display",
-    label: "显示屏",
-    base: "11 英寸 Liquid 视网膜显示屏，适合阅读、批注和日常学习。",
-    pilot: "12.9 英寸 XDR 级高刷显示屏，适合多窗口研究和专业创作。"
+    icon: "portable",
+    label: "轻巧便携",
+    desc: "金属铝背壳＋双色喷砂工艺，净重约540克，厚度仅6.29毫米"
   },
   {
     icon: "chip",
-    label: "芯片性能",
-    base: "A17 智能芯片，覆盖网课、笔记、轻剪辑和多任务处理。",
-    pilot: "M 系列领航芯片，处理大型报告、多轨视频和复杂文件更从容。"
+    label: "强劲性能",
+    desc: "MediaTek天玑6400八核心处理器，主频高达2.5GHz，内置强劲5G芯片"
   },
   {
-    icon: "storage",
-    label: "存储与响应",
-    base: "高速基础存储，满足课程资料、笔记和常用文档保存。",
-    pilot: "更快存储响应，适合大量研报、素材库和专业项目归档。"
+    icon: "display",
+    label: "高清大屏",
+    desc: "12.1吋2.5K高清屏幕，90Hz流畅刷新率，屏占比高达87.5%"
   },
   {
-    icon: "camera",
-    label: "协作影像",
-    base: "横向前置摄像头，视频会议和在线课堂画面自然。",
-    pilot: "四扬声器与录音棚级麦克风，远程协作和内容制作更稳定。"
+    icon: "sound",
+    label: "沉浸音效",
+    desc: "4组扬声器＋2组降噪麦克风，支持杜比全景声，音质更立体"
+  },
+  {
+    icon: "eye",
+    label: "专业护眼",
+    desc: "通过德国莱茵TUV＋国家眼科权威认证，护眼模式双重保障"
   },
   {
     icon: "battery",
-    label: "续航能力",
-    base: "约 10 小时典型使用续航，覆盖一天学习和办公。",
-    pilot: "长时间创作和多任务场景下保持稳定输出。"
+    label: "长效续航",
+    desc: "10200mAh大容量电池，支持45W快速充电，可连续播放影片超过11小时"
   },
   {
-    icon: "pencil",
-    label: "配件支持",
-    base: "兼容灵感笔二代和轻薄键盘保护套。",
-    pilot: "兼容灵感笔 Pro、磁吸键盘和专业创作配件。"
-  },
-  {
-    icon: "weight",
-    label: "机身定位",
-    base: "约 477 克，轻量随身，适合通勤、课堂和家庭使用。",
-    pilot: "大屏专业尺寸，适合桌面生产力和移动创作。"
-  },
-  {
-    icon: "service",
-    label: "适合人群",
-    base: "适合学生、家庭用户和需要高性价比全能设备的人群。",
-    pilot: "适合投研学习、内容创作和高强度移动办公用户。"
+    icon: "shield",
+    label: "防护耐用",
+    desc: "IP52防尘防水等级，适应多种商务环境"
   }
 ];
 
@@ -174,18 +198,49 @@ const storageKeys = {
   checkoutDraft: "ipad_store_checkout_draft",
   addressBook: "ipad_store_address_book",
   orders: "ipad_store_orders",
-  authReturn: "ipad_store_auth_return",
-  registerEmail: "ipad_store_register_email"
+  authReturn: "ipad_store_auth_return"
 };
 
 let notice = "";
+let toastMessage = "";
+let toastTimerId = null;
 const galleryIndexes = {};
 let lightboxProductId = null;
 let addressModalMode = null;
 let openSelectField = null;
+let authMode = "code";
+let authPhoneCode = "+852";
+let authRegionOpen = false;
+let authDraft = {
+  phone: "",
+  credential: "",
+  newPassword: "",
+  captcha: "",
+  agreement: false
+};
+let authErrors = {
+  password: "",
+  captcha: ""
+};
+let authShowCaptcha = false;
+let authCodeCountdownEnd = 0;
+let authCodeTimerId = null;
+
+const AUTH_CODE_SECONDS = 60;
 
 const app = document.querySelector("#app");
 const headerActions = document.querySelector("#headerActions");
+
+const authRegionOptions = [
+  { code: "+86", country: "中国(CN)", group: "常用地区" },
+  { code: "+852", country: "中国香港(HK)", group: "常用地区" },
+  { code: "+853", country: "中国澳门(MO)", group: "常用地区" },
+  { code: "+886", country: "中国台湾(TW)", group: "常用地区" },
+  { code: "+355", country: "阿尔巴尼亚(AL)", group: "A" },
+  { code: "+213", country: "阿尔及利亚(DZ)", group: "A" },
+  { code: "+376", country: "安道尔(AD)", group: "A" },
+  { code: "+244", country: "安哥拉(AO)", group: "A" }
+];
 
 function readJSON(key, fallback) {
   try {
@@ -230,6 +285,173 @@ function getCurrentUser() {
   return getAccounts().find((account) => account.email === email) || null;
 }
 
+function normalizePhoneNumber(phone) {
+  return String(phone || "").replace(/\D/g, "");
+}
+
+function syncAuthDraftFromForm(form = document.querySelector("#authForm")) {
+  if (!form) return;
+  const data = new FormData(form);
+  const nextDraft = { ...authDraft };
+  if (data.has("phone")) nextDraft.phone = String(data.get("phone") || "").trim();
+  if (data.has("credential")) nextDraft.credential = String(data.get("credential") || "").trim();
+  if (data.has("newPassword")) nextDraft.newPassword = String(data.get("newPassword") || "").trim();
+  if (data.has("captcha")) nextDraft.captcha = String(data.get("captcha") || "").trim();
+  if (data.has("agreement")) nextDraft.agreement = Boolean(data.get("agreement"));
+  authDraft = nextDraft;
+}
+
+function resetAuthDraft() {
+  authDraft = {
+    phone: "",
+    credential: "",
+    newPassword: "",
+    captcha: "",
+    agreement: false
+  };
+}
+
+function resetAuthErrors() {
+  authErrors = {
+    password: "",
+    captcha: ""
+  };
+  authShowCaptcha = false;
+}
+
+function hasValidResetPasswordLength(password) {
+  const value = String(password || "").trim();
+  return value.length >= 8 && value.length <= 40;
+}
+
+function hasValidResetPasswordComposition(password) {
+  const value = String(password || "");
+  return /[a-z]/.test(value) && /[A-Z]/.test(value) && /\d/.test(value);
+}
+
+function isAuthSubmitReady() {
+  const phoneReady = normalizePhoneNumber(authDraft.phone).length >= 4;
+  if (authMode === "password") {
+    return phoneReady && authDraft.credential.trim().length >= 6;
+  }
+  if (authMode === "resetVerify") {
+    return phoneReady && authDraft.credential.trim().length > 0;
+  }
+  if (authMode === "resetPassword") {
+    return hasValidResetPasswordLength(authDraft.newPassword) && hasValidResetPasswordComposition(authDraft.newPassword);
+  }
+  return phoneReady && authDraft.credential.trim().length > 0;
+}
+
+function updateAuthSubmitState() {
+  const button = document.querySelector(".auth-submit");
+  if (!button) return;
+  button.disabled = !isAuthSubmitReady();
+}
+
+function updateAuthPasswordRules() {
+  const rules = document.querySelectorAll(".auth-password-rules span");
+  if (rules.length < 2) return;
+  rules[0].classList.toggle("pass", hasValidResetPasswordLength(authDraft.newPassword));
+  rules[1].classList.toggle("pass", hasValidResetPasswordComposition(authDraft.newPassword));
+}
+
+function showToast(message) {
+  toastMessage = message;
+  if (toastTimerId) clearTimeout(toastTimerId);
+  toastTimerId = setTimeout(() => {
+    toastMessage = "";
+    toastTimerId = null;
+    render();
+  }, 2600);
+}
+
+function getAuthCodeRemaining() {
+  return Math.max(0, Math.ceil((authCodeCountdownEnd - Date.now()) / 1000));
+}
+
+function getAuthCodeButtonLabel() {
+  const remaining = getAuthCodeRemaining();
+  return remaining > 0 ? `再次发送 ${remaining}s` : "发送验证码";
+}
+
+function stopAuthCodeCountdown() {
+  authCodeCountdownEnd = 0;
+  if (authCodeTimerId) {
+    clearInterval(authCodeTimerId);
+    authCodeTimerId = null;
+  }
+}
+
+function updateAuthCodeButton() {
+  const button = document.querySelector(".auth-send-code");
+  if (!button) return;
+  const remaining = getAuthCodeRemaining();
+  button.textContent = getAuthCodeButtonLabel();
+  button.disabled = remaining > 0;
+  button.classList.toggle("is-counting", remaining > 0);
+  if (remaining <= 0 && authCodeTimerId) {
+    clearInterval(authCodeTimerId);
+    authCodeTimerId = null;
+  }
+}
+
+function startAuthCodeCountdown() {
+  authCodeCountdownEnd = Date.now() + AUTH_CODE_SECONDS * 1000;
+  updateAuthCodeButton();
+  if (authCodeTimerId) clearInterval(authCodeTimerId);
+  authCodeTimerId = setInterval(() => {
+    if (getRoute() !== "/login" && getRoute() !== "/register") {
+      stopAuthCodeCountdown();
+      return;
+    }
+    updateAuthCodeButton();
+  }, 1000);
+}
+
+function phoneAccountEmail(phoneCode, phone) {
+  const digits = normalizePhoneNumber(phone);
+  const code = String(phoneCode || phoneCodeOptions[0].code).replace(/\D/g, "");
+  return `phone-${code}-${digits}@fangde.local`;
+}
+
+function findAccountByPhone(phoneCode, phone) {
+  const digits = normalizePhoneNumber(phone);
+  if (!digits) return null;
+  return getAccounts().find((account) => {
+    const accountDigits = normalizePhoneNumber(account.phone);
+    return account.phoneCode === phoneCode && accountDigits === digits;
+  }) || getAccounts().find((account) => account.email === phoneAccountEmail(phoneCode, phone)) || null;
+}
+
+function upsertPhoneAccount(phoneCode, phone, extra = {}) {
+  const digits = normalizePhoneNumber(phone);
+  if (!digits) return null;
+  const accounts = getAccounts();
+  const existingIndex = accounts.findIndex((account) => {
+    const accountDigits = normalizePhoneNumber(account.phone);
+    return (account.phoneCode === phoneCode && accountDigits === digits) || account.email === phoneAccountEmail(phoneCode, phone);
+  });
+  const fallbackName = `用户${digits.slice(-4)}`;
+  const nextAccount = {
+    ...(existingIndex >= 0 ? accounts[existingIndex] : {}),
+    email: existingIndex >= 0 ? accounts[existingIndex].email : phoneAccountEmail(phoneCode, phone),
+    name: existingIndex >= 0 ? accounts[existingIndex].name : fallbackName,
+    phoneCode,
+    phone: digits,
+    address: existingIndex >= 0 ? accounts[existingIndex].address || "" : "",
+    coupons: existingIndex >= 0 ? accounts[existingIndex].coupons || defaultCoupons() : defaultCoupons(),
+    ...extra
+  };
+  if (existingIndex >= 0) {
+    accounts[existingIndex] = nextAccount;
+  } else {
+    accounts.push(nextAccount);
+  }
+  saveAccounts(accounts);
+  return nextAccount;
+}
+
 function defaultCoupons() {
   return [
     {
@@ -241,8 +463,8 @@ function defaultCoupons() {
     },
     {
       id: "PRO500",
-      name: "领航创作券",
-      desc: "满 6000 元可用，适合领航版与高配组合",
+      name: "会员服务券",
+      desc: "满 6000 元可用，适合会员服务方案",
       value: 500,
       threshold: 6000
     }
@@ -434,7 +656,7 @@ function navigate(route) {
 function defaultSelection(product) {
   const selection = { productId: product.id, qty: 1 };
   product.optionGroups.forEach((group) => {
-    selection[group.key] = group.options[0].id;
+    selection[group.key] = group.defaultId || group.options[0].id;
   });
   return selection;
 }
@@ -500,19 +722,18 @@ function selectionDetails(product, selection) {
       title: group.title.replace("选择", ""),
       name: option.name,
       desc: option.desc,
-      add: option.add
+      add: option.add,
+      price: option.price
     };
   });
 }
 
 function itemUnitPrice(product, selection) {
-  return (
-    product.price +
-    product.optionGroups.reduce((sum, group) => {
-      const option = findOption(product, group.key, selection[group.key]);
-      return sum + Number(option.add || 0);
-    }, 0)
-  );
+  return product.optionGroups.reduce((price, group) => {
+    const option = findOption(product, group.key, selection[group.key]);
+    if (Number.isFinite(Number(option?.price))) return Number(option.price);
+    return price + Number(option?.add || 0);
+  }, product.price);
 }
 
 function draftSubtotal(draft) {
@@ -551,7 +772,7 @@ function clearDraft() {
 function defaultAddress(user) {
   return {
     name: user?.name || "",
-    phoneCode: phoneCodeOptions[0].code,
+    phoneCode: user?.phoneCode || phoneCodeOptions[0].code,
     phone: user?.phone || "",
     province: regionTree[0].name,
     city: regionTree[0].cities[0].name,
@@ -565,7 +786,7 @@ function defaultAddress(user) {
 function emptyAddress(user) {
   return {
     name: user?.name || "",
-    phoneCode: phoneCodeOptions[0].code,
+    phoneCode: user?.phoneCode || phoneCodeOptions[0].code,
     phone: user?.phone || "",
     province: regionTree[0].name,
     city: regionTree[0].cities[0].name,
@@ -747,17 +968,23 @@ function renderAddressModal(addressBook, draft) {
 
 function updateHeader() {
   const user = getCurrentUser();
-  const initial = user?.name?.slice(0, 1) || "用";
+  const initial = user?.name?.slice(0, 1) || "账";
   headerActions.innerHTML = user
-    ? `<a class="header-link account-entry" href="#/account" aria-label="进入个人中心">
+    ? `<a class="header-cta" href="#/product/base">立即訂購</a>
+      <a class="header-icon-link account-entry" href="#/account" aria-label="进入个人中心">
         <span class="header-avatar" aria-hidden="true">${esc(initial)}</span>
-        <span class="account-name">${esc(user.name)}</span>
-      </a><button class="text-link" data-action="logout">退出</button>`
-    : `<a class="header-link" href="#/login">登录</a>`;
+      </a>
+      <button class="header-icon-link" data-action="logout" aria-label="退出登录">退出</button>
+      <span class="header-divider" aria-hidden="true"></span>
+      <span class="header-globe" aria-hidden="true">◎</span>`
+    : `<a class="header-cta" href="#/product/base">立即訂購</a>
+      <a class="header-icon-link" href="#/login" aria-label="登录">登录</a>
+      <span class="header-divider" aria-hidden="true"></span>
+      <span class="header-globe" aria-hidden="true">◎</span>`;
 }
 
 function renderShell(content) {
-  app.innerHTML = content;
+  app.innerHTML = `${content}${toastMessage ? `<div class="toast-message" role="status">${esc(toastMessage)}</div>` : ""}`;
   app.focus({ preventScroll: true });
   updateHeader();
 }
@@ -766,16 +993,16 @@ function homePage() {
   return `
     <section class="hero">
       <div class="container hero-copy">
-        <p class="eyebrow">新一代 iPad 系列</p>
-        <h1>一块屏幕，装下你的学习、创作和工作。</h1>
-        <p class="hero-subtitle">基础版轻盈全能，领航版面向专业创作。两款 iPad 都围绕真实使用场景设计，让灵感从打开屏幕的那一刻开始。</p>
+        <p class="eyebrow">方德AI股票機</p>
+        <h1>AI驱动的全球智能投资决策终端。</h1>
+        <p class="hero-subtitle">全球行情随身掌控，AI辅助智能决策，覆盖行情、分析、决策与交易的一站式闭环。</p>
         <div class="hero-cta">
-          <a class="text-link" href="#/product/base">了解基础版</a>
-          <a class="text-link" href="#/product/pilot">了解领航版</a>
+          <a class="text-link" href="#/product/base">立即订购</a>
+          <a class="text-link" href="#/product/base">查看会员服务体系</a>
         </div>
       </div>
       <div class="hero-visual">
-        <img src="${heroImage}" alt="两款 iPad 产品主视觉" />
+        <img src="${heroImage}" alt="方德AI股票机产品主视觉" />
       </div>
     </section>
 
@@ -783,15 +1010,35 @@ function homePage() {
       <div class="container">
         <div class="section-head center">
           <p class="section-kicker">购买方案</p>
-          <h2 class="section-title">选择适合你的版本。</h2>
-          <p class="section-desc">基础版适合轻量学习和日常记录，领航版适合更高强度的投研学习与创作工作流。</p>
+          <h2 class="section-title">选择适合你的会员服务。</h2>
+          <p class="section-desc">从裸机入门到黑钻会员服务，按投研深度和服务周期选择适合你的方案。</p>
         </div>
         <div class="purchase-plan-grid">
-          ${purchasePlanCard(products.base)}
-          ${purchasePlanCard(products.pilot)}
+          ${membershipOptions.map((option) => purchasePlanOptionCard(option)).join("")}
         </div>
       </div>
     </section>
+  `;
+}
+
+function purchasePlanOptionCard(option) {
+  return `
+    <a class="plan-card membership-plan-card" href="#/product/base">
+      <div class="plan-copy">
+        <p class="plan-badge">${option.name.includes("基础版") ? "轻盈入门" : "会员服务"}</p>
+        <h3>${option.name}</h3>
+        <p>${option.desc}，适合希望获得更完整投资决策支持的用户。</p>
+        <div class="product-card-meta">
+          <span class="tag">${money(option.price)}</span>
+          <span class="tag">AI投研服务</span>
+          <span class="tag">活动赠送学习机</span>
+        </div>
+        <span class="plan-detail">查看详情</span>
+      </div>
+      <div class="plan-media">
+        <img src="${heroImage}" alt="${option.name} 产品图" />
+      </div>
+    </a>
   `;
 }
 
@@ -850,15 +1097,26 @@ function detailPage(productId) {
             <span class="price-note">所选版本单机价格，含税</span>
           </div>
           <ul class="highlights">
-            ${product.highlights.map((item) => `<li>${item}</li>`).join("")}
+            ${product.highlights
+              .map(
+                (item) => `
+              <li>
+                <span>
+                  <strong>${item.title}</strong>
+                  <small>${item.desc}</small>
+                </span>
+              </li>
+            `
+              )
+              .join("")}
           </ul>
-          ${versionSelector(product.id)}
+          ${product.optionGroups.map((group) => optionGroup(product, selection, group)).join("")}
           ${quantitySelector(product.id, selection.qty)}
           <div class="sticky-buy-bar">
             <div class="sticky-buy-inner">
               <div>
                 <p class="section-kicker">所选版本</p>
-                <strong>${product.name} · ${money(unit * selection.qty)}</strong>
+                <strong>${selectionDetails(product, selection)[0].name} · ${money(unit * selection.qty)}</strong>
               </div>
               <button class="btn primary" data-action="buy-now" data-product="${product.id}">立即购买</button>
             </div>
@@ -866,23 +1124,8 @@ function detailPage(productId) {
         </div>
       </div>
     </section>
-    <section class="section">
-      <div class="container">
-        <div class="feature-strip">
-          ${product.metrics
-            .map(
-              ([value, label]) => `
-              <div class="feature-item">
-                <span class="feature-value">${value}</span>
-                <span class="feature-label">${label}</span>
-              </div>
-            `
-            )
-            .join("")}
-        </div>
-      </div>
-    </section>
     ${specCompareSection(product.id)}
+    ${serviceSystemSection()}
     ${lightboxProductId === product.id ? galleryLightbox(product) : ""}
   `;
 }
@@ -892,40 +1135,23 @@ function specCompareSection(activeProductId) {
     <section class="section spec-compare-section">
       <div class="container">
         <div class="spec-dark-head">
-          <p class="section-kicker">参数对比</p>
-          <h2>两款 iPad 的具体差异，一眼看清。</h2>
-          <p>按照显示、性能、协作、续航和配件能力拆分，让用户在详情页也能直接比较基础版与领航版。</p>
+          <p class="section-kicker">参数简介</p>
+          <h2>方德AI股票机的具体参数，一眼看清。</h2>
         </div>
-        <div class="spec-compare">
-          ${Object.values(products).map((product) => specProductColumn(product, activeProductId)).join("")}
+        <div class="spec-feature-panel">
+          ${specRows.map((row) => specItem(row)).join("")}
         </div>
       </div>
     </section>
   `;
 }
 
-function specProductColumn(product, activeProductId) {
-  const size = product.id === "base" ? "11 英寸" : "12.9 英寸";
-  const display = product.id === "base" ? "高清 Liquid 视网膜显示屏" : "XDR 级高刷显示屏";
-  return `
-    <div class="spec-column ${activeProductId === product.id ? "active" : ""}">
-      <div class="spec-column-head">
-        <h3>${size}</h3>
-        <p>${product.name}</p>
-        <span>${display}</span>
-        <strong>${money(product.price)} 起</strong>
-      </div>
-      ${specRows.map((row) => specItem(row, product.id)).join("")}
-    </div>
-  `;
-}
-
-function specItem(row, productId) {
+function specItem(row) {
   return `
     <article class="spec-item">
       ${specIcon(row.icon)}
       <h4>${row.label}</h4>
-      <p>${productId === "base" ? row.base : row.pilot}</p>
+      <p>${row.desc}</p>
     </article>
   `;
 }
@@ -933,15 +1159,53 @@ function specItem(row, productId) {
 function specIcon(name) {
   const icons = {
     display: '<rect x="4" y="5" width="40" height="26" rx="4"></rect><path d="M18 39h12"></path><path d="M24 31v8"></path>',
+    portable: '<path d="M15 18h18v18H15z"></path><path d="M19 12h10l4 6H15l4-6z"></path><path d="M20 24h8"></path>',
     chip: '<rect x="13" y="13" width="22" height="22" rx="4"></rect><path d="M18 7v6M24 7v6M30 7v6M18 35v6M24 35v6M30 35v6M7 18h6M7 24h6M7 30h6M35 18h6M35 24h6M35 30h6"></path>',
+    sound: '<path d="M10 29h7l10 8V11L17 19h-7v10z"></path><path d="M33 18c2 2 3 4 3 6s-1 4-3 6"></path><path d="M38 13c4 4 6 7 6 11s-2 8-6 11"></path>',
+    eye: '<path d="M5 24s7-11 19-11 19 11 19 11-7 11-19 11S5 24 5 24z"></path><circle cx="24" cy="24" r="6"></circle>',
     storage: '<path d="M10 13c0-4 28-4 28 0v22c0 4-28 4-28 0V13z"></path><path d="M10 13c0 4 28 4 28 0"></path><path d="M10 24c0 4 28 4 28 0"></path>',
     camera: '<rect x="7" y="15" width="34" height="24" rx="5"></rect><path d="M17 15l3-6h8l3 6"></path><circle cx="24" cy="27" r="7"></circle>',
     battery: '<rect x="6" y="16" width="32" height="16" rx="4"></rect><path d="M38 21h4v6h-4"></path><path d="M13 24h16"></path>',
+    shield: '<path d="M24 5l16 7v11c0 10-7 17-16 20-9-3-16-10-16-20V12l16-7z"></path><path d="M17 24l5 5 10-11"></path>',
     pencil: '<path d="M12 36l4-12 17-17a5 5 0 0 1 7 7L23 31 12 36z"></path><path d="M29 11l8 8"></path>',
     weight: '<path d="M14 20h20l4 20H10l4-20z"></path><path d="M18 20a6 6 0 0 1 12 0"></path>',
     service: '<circle cx="24" cy="17" r="8"></circle><path d="M9 42c2-10 28-10 30 0"></path><path d="M35 8l4-4"></path><path d="M39 14h5"></path>'
   };
   return `<span class="spec-icon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">${icons[name] || icons.display}</svg></span>`;
+}
+
+function serviceSystemSection() {
+  return `
+    <section class="section service-system-section" id="service-system">
+      <div class="service-system-card">
+        <h2>服务体系运营图占位</h2>
+        <div class="service-system-board">
+          <h3>港版股票机定价体系</h3>
+          <table>
+            <thead>
+              <tr><th>服务方案</th><th>销售价（港币）</th></tr>
+            </thead>
+            <tbody>
+              ${membershipOptions
+                .map((option) => `<tr><td>${option.name} + ${option.desc}</td><td>${option.price}</td></tr>`)
+                .join("")}
+            </tbody>
+          </table>
+          <div class="service-policy-grid">
+            <div>
+              <strong>新客户</strong>
+              <p>活动赠送学习机与基础投研服务，适合首次建立 AI 投研工作流。</p>
+            </div>
+            <div>
+              <strong>老客户</strong>
+              <p>会员服务可持续升级，结合投顾、量化与交易工具提升决策效率。</p>
+            </div>
+          </div>
+          <p class="service-note">注：以上价格为初步规划，商业涉及财务部门确认最终定价策略。</p>
+        </div>
+      </div>
+    </section>
+  `;
 }
 
 function detailGallery(product) {
@@ -1013,7 +1277,7 @@ function versionSelector(activeProductId) {
     <div class="config-block">
       <div class="config-title">
         <h3>选择版本</h3>
-        <span>基础版 ${money(products.base.price)}，领航版 ${money(products.pilot.price)}。</span>
+        <span>基础版 ${money(products.base.price)} 起，会员服务最高 ${money(168800)}。</span>
       </div>
       <div class="option-grid version-grid">
         ${Object.values(products)
@@ -1042,7 +1306,11 @@ function optionGroup(product, selection, group) {
         ${group.options
           .map((option) => {
             const checked = selection[group.key] === option.id;
-            const addText = option.add ? `+ ${money(option.add)}` : "已包含";
+            const priceText = Number.isFinite(Number(option.price))
+              ? money(option.price)
+              : option.add
+                ? `+ ${money(option.add)}`
+                : "已包含";
             return `
               <label class="option-card ${checked ? "checked" : ""}">
                 <input
@@ -1055,7 +1323,7 @@ function optionGroup(product, selection, group) {
                   data-key="${group.key}"
                 />
                 <span class="option-name">${option.name}</span>
-                <span class="option-desc">${option.desc} · ${addText}</span>
+                <span class="option-desc">${option.desc} ${priceText}</span>
               </label>
             `;
           })
@@ -1101,7 +1369,7 @@ function checkoutPage() {
 
   const draft = getDraft();
   if (!draft) {
-    return emptyPage("还没有待确认的订单", "先选择一款 iPad，再回到这里确认订单细节。", "#/", "返回产品首页");
+    return emptyPage("还没有待确认的订单", "先选择方德AI股票机服务方案，再回到这里确认订单细节。", "#/", "返回产品首页");
   }
 
   const addressBook = getAddressBook(user);
@@ -1193,7 +1461,7 @@ function checkoutPage() {
                     .join("")}
                 </div>
                 <form class="coupon-form" id="couponForm">
-                  <input aria-label="优惠码" placeholder="输入优惠码，如 IPAD300" name="couponCode" />
+                  <input aria-label="优惠码" placeholder="输入优惠码，如 FD300" name="couponCode" />
                   <button class="btn secondary" type="submit">添加优惠券</button>
                 </form>
                 ${notice ? `<p class="message">${notice}</p>` : ""}
@@ -1226,60 +1494,148 @@ function summaryRows(subtotal, discount, total) {
   `;
 }
 
-function loginPage() {
+function eyeIcon() {
   return `
-    <section class="container auth-shell">
-      <div class="auth-visual">
-        <img src="${heroImage}" alt="iPad 登录页产品图" />
+    <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+      <path d="M2.5 12s3.4-5.5 9.5-5.5S21.5 12 21.5 12 18.1 17.5 12 17.5 2.5 12 2.5 12Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="12" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="1.8"/>
+    </svg>
+  `;
+}
+
+function loginPage() {
+  const isPassword = authMode === "password";
+  const isResetVerify = authMode === "resetVerify";
+  const isResetPassword = authMode === "resetPassword";
+  const isReset = isResetVerify || isResetPassword;
+  const codeRemaining = getAuthCodeRemaining();
+  const codeButtonDisabled = codeRemaining > 0 ? "disabled" : "";
+  const title = isPassword
+    ? "密码登录"
+    : isResetVerify
+      ? "请验证您的手机号"
+      : isResetPassword
+        ? "请重新设置登录密码"
+        : "登录/注册";
+  const subtitle = isPassword || isReset ? "" : "首次登录的手机号将自动注册";
+  const submitDisabled = isAuthSubmitReady() ? "" : "disabled";
+  return `
+    <section class="auth-shell">
+      <div class="auth-brand-panel">
+        <div class="auth-logo">
+          <span class="auth-logo-head">
+            <span class="auth-logo-symbol" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="auth-logo-mark">方德證券</span>
+          </span>
+          <span class="auth-logo-sub">九方智投控股旗下品牌</span>
+        </div>
+        <div class="auth-brand-copy">
+          <p>极致体验</p>
+          <h2>开启全新投资体验</h2>
+          <span>免佣享受</span>
+        </div>
       </div>
-      <div class="auth-card">
-        <h1>登录 iPad 官方商城</h1>
-        <p>登录后将自动回到下单页。若邮箱尚未注册，系统会带你完成注册并继续结算。</p>
-        <form id="loginForm">
-          <div class="field">
-            <label for="loginEmail">邮箱</label>
-            <input id="loginEmail" name="email" type="email" autocomplete="email" placeholder="name@example.com" required />
-          </div>
-          <div class="field">
-            <label for="loginCode">验证码</label>
-            <input id="loginCode" name="code" placeholder="输入任意 6 位验证码" required />
-          </div>
-          <button class="btn primary full" type="submit">登录并继续</button>
-        </form>
-        ${notice ? `<p class="message">${notice}</p>` : ""}
+      <div class="auth-form-panel">
+        <div class="auth-mobile-top">
+          <span class="auth-mobile-mark" aria-label="方德證券"><i></i><i></i><i></i></span>
+          <button type="button" class="auth-mobile-menu" aria-label="菜单"><span></span><span></span><span></span></button>
+        </div>
+        <div class="auth-card">
+          <h1>${esc(title)}</h1>
+          ${subtitle ? `<p>${esc(subtitle)}</p>` : ""}
+          <form id="authForm" class="auth-form">
+            ${!isResetPassword ? `<div class="auth-field">
+              <label for="authPhone">手机号码</label>
+              <div class="auth-input-row auth-phone-row ${authRegionOpen ? "active" : ""}">
+                <button type="button" class="auth-code-select" data-action="auth-region-toggle" aria-expanded="${authRegionOpen ? "true" : "false"}">
+                  ${esc(authPhoneCode)} <span aria-hidden="true">⌄</span>
+                </button>
+                <input id="authPhone" name="phone" inputmode="tel" autocomplete="tel" placeholder="请输入手机号" value="${esc(authDraft.phone)}" required />
+              </div>
+              ${authRegionOpen ? authRegionMenu() : ""}
+            </div>` : ""}
+            ${!isResetPassword ? `<div class="auth-field">
+              <label for="authCredential">${isPassword ? "密码" : isReset ? "短信验证码" : "短信验证码"}</label>
+              <div class="auth-input-row auth-credential-row">
+                <input id="authCredential" name="credential" type="text" inputmode="${isPassword ? "text" : "numeric"}" placeholder="${isPassword ? "请输入密码" : "请输入短信验证码"}" value="${esc(authDraft.credential)}" required />
+                ${isPassword ? `<button type="button" class="auth-password-eye" aria-label="查看密码">${eyeIcon()}</button>` : `<button type="button" class="auth-send-code ${codeRemaining > 0 ? "is-counting" : ""}" data-action="send-auth-code" ${codeButtonDisabled}>${esc(getAuthCodeButtonLabel())}</button>`}
+              </div>
+              ${authErrors.password ? `<div class="auth-error">${esc(authErrors.password)}</div>` : ""}
+              ${isPassword && authShowCaptcha ? `
+                <div class="auth-field auth-captcha-field">
+                  <label for="authCaptcha">图形验证码</label>
+                  <div class="auth-input-row auth-captcha-row">
+                    <input id="authCaptcha" name="captcha" type="text" placeholder="请输入图形验证码" value="${esc(authDraft.captcha)}" />
+                    <span class="auth-captcha-image" aria-hidden="true"></span>
+                  </div>
+                  ${authErrors.captcha ? `<div class="auth-error">${esc(authErrors.captcha)}</div>` : ""}
+                </div>
+              ` : ""}
+              <div class="auth-mode-links ${isPassword ? "password-links" : ""}">
+                ${isPassword
+                  ? `<button type="button" data-action="switch-auth-mode" data-auth-mode="code">验证码登录</button><button type="button" data-action="switch-auth-mode" data-auth-mode="resetVerify">忘记密码？</button>`
+                  : isResetVerify
+                    ? `<button type="button" data-action="switch-auth-mode" data-auth-mode="code">返回登录</button>`
+                    : isResetPassword
+                      ? ""
+                      : `<button type="button" data-action="switch-auth-mode" data-auth-mode="password">密码登录</button>`}
+              </div>
+            </div>` : ""}
+            ${isResetPassword ? `
+              <div class="auth-field auth-reset-password-field">
+                <div class="auth-input-row">
+                  <input id="authNewPassword" name="newPassword" type="text" placeholder="请输入密码" value="${esc(authDraft.newPassword)}" required />
+                  <button type="button" class="auth-password-eye" aria-label="查看密码">${eyeIcon()}</button>
+                </div>
+                <div class="auth-password-rules">
+                  <span class="${hasValidResetPasswordLength(authDraft.newPassword) ? "pass" : ""}">密码需有8-40位字符</span>
+                  <span class="${hasValidResetPasswordComposition(authDraft.newPassword) ? "pass" : ""}">需要包括大小写字母、数字</span>
+                </div>
+              </div>
+            ` : ""}
+            ${!isReset ? `<label class="auth-agreement">
+              <input type="checkbox" name="agreement" ${authDraft.agreement ? "checked" : ""} />
+              <span>请阅读并同意《用户协议》《免责声明》《个人信息保护指引》《个人资料收集声明》</span>
+            </label>` : ""}
+            <button class="auth-submit" type="submit" ${submitDisabled}>${isResetVerify ? "下一步" : isResetPassword ? "完成修改" : "登录"}</button>
+          </form>
+          ${notice ? `<p class="message">${notice}</p>` : ""}
+        </div>
       </div>
     </section>
   `;
 }
 
 function registerPage() {
-  const email = localStorage.getItem(storageKeys.registerEmail) || "";
+  return loginPage();
+}
+
+function authRegionMenu() {
+  const groups = authRegionOptions.reduce((acc, option) => {
+    acc[option.group] = acc[option.group] || [];
+    acc[option.group].push(option);
+    return acc;
+  }, {});
   return `
-    <section class="container auth-shell">
-      <div class="auth-visual">
-        <img src="${heroImage}" alt="iPad 注册页产品图" />
-      </div>
-      <div class="auth-card">
-        <h1>创建商城账户</h1>
-        <p>只需要补充基本收货信息。注册完成后会自动回到订单确认页，不会丢失你选择的 iPad 配置。</p>
-        <form id="registerForm">
-          <div class="field">
-            <label for="registerEmail">邮箱</label>
-            <input id="registerEmail" name="email" type="email" autocomplete="email" value="${esc(email)}" required />
-          </div>
-          <div class="field">
-            <label for="registerName">姓名</label>
-            <input id="registerName" name="name" placeholder="例如：陈景然" required />
-          </div>
-          <div class="field">
-            <label for="registerPhone">手机号</label>
-            <input id="registerPhone" name="phone" placeholder="例如：138 0000 2026" required />
-          </div>
-          <button class="btn dark full" type="submit">完成注册并继续下单</button>
-        </form>
-        ${notice ? `<p class="message">${notice}</p>` : ""}
-      </div>
-    </section>
+    <div class="auth-region-menu">
+      <div class="auth-region-search"><span aria-hidden="true">⌕</span><input placeholder="请输入" /></div>
+      ${Object.entries(groups)
+        .map(
+          ([group, options]) => `
+        <div class="auth-region-group">${group}</div>
+        ${options
+          .map(
+            (option) => `
+          <button type="button" class="auth-region-option ${authPhoneCode === option.code ? "selected" : ""}" data-action="auth-region-select" data-code="${esc(option.code)}">
+            <span>${esc(option.country)}</span><strong>${esc(option.code)}</strong>
+          </button>
+        `
+          )
+          .join("")}
+      `
+        )
+        .join("")}
+    </div>
   `;
 }
 
@@ -1441,7 +1797,7 @@ function ordersPage(orderId) {
       <div class="container">
         <div class="section-head">
           <p class="section-kicker">个人中心 / 订单管理</p>
-          <h1 class="section-title">查看你的 iPad 订单。</h1>
+          <h1 class="section-title">查看你的方德AI股票机订单。</h1>
           <p class="section-desc">支付成功的订单会自动进入这里。你可以查看配置、金额、支付方式和配送信息。</p>
         </div>
         <div class="panel">
@@ -1453,7 +1809,7 @@ function ordersPage(orderId) {
             ${
               orders.length
                 ? `<div class="order-grid">${orders.map(orderCard).join("")}</div>`
-                : `<div class="empty-state"><h2>暂无订单</h2><p>选好 iPad 并完成支付后，订单会出现在这里。</p><a class="btn primary" href="#/">去选购</a></div>`
+                : `<div class="empty-state"><h2>暂无订单</h2><p>选好服务方案并完成支付后，订单会出现在这里。</p><a class="btn primary" href="#/">去选购</a></div>`
             }
           </div>
         </div>
@@ -1606,7 +1962,7 @@ function successPage(orderId) {
         <p class="page-subtitle">我们已经生成订单 ${esc(orderId || "")}。你可以在个人中心的订单管理中查看订单状态、配置和配送信息。</p>
         <div class="hero-cta">
           <a class="btn primary" href="#/orders">查看订单</a>
-          <a class="btn secondary" href="#/">继续浏览 iPad</a>
+          <a class="btn secondary" href="#/">继续浏览产品</a>
         </div>
       </div>
     </section>
@@ -1619,19 +1975,19 @@ function helpPage() {
       <div class="container">
         <div class="help-hero">
           <p class="section-kicker">帮助中心</p>
-          <h1 class="section-title">iPad 购买支持。</h1>
-          <p class="section-desc">围绕 iPad 选购、配件兼容、付款发票、配送、退货退款和保修售后等常见购买问题，购买前后都能快速找到答案。</p>
+          <h1 class="section-title">方德AI股票机购买支持。</h1>
+          <p class="section-desc">围绕服务方案、付款发票、配送、退货退款和售后服务等常见购买问题，购买前后都能快速找到答案。</p>
         </div>
         <div class="help-action-grid">
           <a class="help-action-card" href="#/orders">
             <span class="help-action-index">01</span>
-            <strong>选购建议</strong>
-            <span>对比屏幕、容量、续航和使用场景，选择适合的版本。</span>
+            <strong>方案选择</strong>
+            <span>对比基础版、白银、黄金、铂金、钻石和黑钻会员服务。</span>
           </a>
           <a class="help-action-card" href="#/help">
             <span class="help-action-index">02</span>
-            <strong>配件兼容</strong>
-            <span>确认灵感笔、键盘保护套和充电配件是否匹配。</span>
+            <strong>服务权益</strong>
+            <span>确认投顾服务、量化工具和活动赠送学习机的适用范围。</span>
           </a>
           <a class="help-action-card" href="#/help">
             <span class="help-action-index">03</span>
@@ -1647,11 +2003,11 @@ function helpPage() {
             </div>
             <div class="panel-body">
               <ol class="help-steps">
-                <li><strong>机型怎么选</strong><span>基础版适合课堂、办公和家庭娱乐；领航版更适合多任务创作、绘图和高负载应用。</span></li>
-                <li><strong>配件兼容</strong><span>购买前请确认灵感笔、键盘保护套、支架和充电配件与所选 iPad 版本匹配。</span></li>
+                <li><strong>方案怎么选</strong><span>基础版适合先体验 AI 投研终端；会员方案适合需要投顾、量化与交易服务的用户。</span></li>
+                <li><strong>服务权益</strong><span>购买前请确认会员等级、服务周期、活动赠送设备和投研支持范围。</span></li>
                 <li><strong>付款与发票</strong><span>支持常见在线支付方式，订单完成后可查看支付明细；发票会按订单与退款状态更新。</span></li>
                 <li><strong>配送服务</strong><span>根据库存和收货地址展示可用配送方式、预计送达时间和配送限制。</span></li>
-                <li><strong>退货退款</strong><span>符合条件的 iPad 可在收货后 14 天内申请退货，商品需保持完好并包含原包装和配件。</span></li>
+                <li><strong>退货退款</strong><span>符合条件的设备可在收货后 14 天内申请退货，商品需保持完好并包含原包装和配件。</span></li>
                 <li><strong>保修与售后</strong><span>保留订单凭证可用于保修服务；发货后可在订单详情中发起售后或维修申请。</span></li>
               </ol>
             </div>
@@ -1781,24 +2137,24 @@ function applyCouponCode(code) {
   if (!user) return;
   const normalized = code.trim().toUpperCase();
   const available = {
-    IPAD300: {
-      id: "IPAD300",
+    FD300: {
+      id: "FD300",
       name: "官网限时券",
-      desc: "满 3000 元可用，适合任意 iPad 订单",
+      desc: "满 3000 元可用，适合任意方德AI股票机订单",
       value: 300,
       threshold: 3000
     },
-    PILOT800: {
-      id: "PILOT800",
-      name: "领航版升级券",
-      desc: "满 8000 元可用，适合高配领航版",
+    MEMBER800: {
+      id: "MEMBER800",
+      name: "会员升级券",
+      desc: "满 8000 元可用，适合会员服务方案",
       value: 800,
       threshold: 8000
     }
   };
   const coupon = available[normalized];
   if (!coupon) {
-    notice = "优惠码无效。可试试 IPAD300 或 PILOT800。";
+    notice = "优惠码无效。可试试 FD300 或 MEMBER800。";
     render();
     return;
   }
@@ -1870,9 +2226,16 @@ function applyAfterSales(orderId) {
 function render() {
   const route = getRoute();
   notice = notice || "";
+  const isAuthRoute = route === "/login" || route === "/register";
+  document.body.classList.toggle("auth-route", isAuthRoute);
   if (route !== "/checkout") {
     addressModalMode = null;
     openSelectField = null;
+  }
+  if (!isAuthRoute) {
+    authRegionOpen = false;
+    authMode = "code";
+    stopAuthCodeCountdown();
   }
   updateHeader();
 
@@ -1945,12 +2308,25 @@ document.addEventListener("change", (event) => {
     if (target.dataset.draftField === "province" || target.dataset.draftField === "city") {
       render();
     }
+    return;
+  }
+  if (target.closest("#authForm")) {
+    syncAuthDraftFromForm(target.form);
+    updateAuthSubmitState();
+    updateAuthPasswordRules();
   }
 });
 
 document.addEventListener("input", (event) => {
-  if (!event.target.matches("[data-draft-field]")) return;
-  collectAddressFromPage();
+  if (event.target.closest("#authForm")) {
+    syncAuthDraftFromForm(event.target.form);
+    updateAuthSubmitState();
+    updateAuthPasswordRules();
+    return;
+  }
+  if (event.target.matches("[data-draft-field]")) {
+    collectAddressFromPage();
+  }
 });
 
 document.addEventListener("click", (event) => {
@@ -1960,10 +2336,54 @@ document.addEventListener("click", (event) => {
       openSelectField = null;
       render();
     }
+    if (authRegionOpen) {
+      authRegionOpen = false;
+      render();
+    }
     return;
   }
 
   const action = actionTarget.dataset.action;
+  if (action === "auth-region-toggle") {
+    syncAuthDraftFromForm();
+    updateAuthSubmitState();
+    authRegionOpen = !authRegionOpen;
+    render();
+  }
+
+  if (action === "auth-region-select") {
+    syncAuthDraftFromForm();
+    authPhoneCode = actionTarget.dataset.code || "+852";
+    authRegionOpen = false;
+    resetAuthErrors();
+    render();
+  }
+
+  if (action === "switch-auth-mode") {
+    syncAuthDraftFromForm();
+    authMode = actionTarget.dataset.authMode || "code";
+    authRegionOpen = false;
+    notice = "";
+    resetAuthErrors();
+    stopAuthCodeCountdown();
+    render();
+  }
+
+  if (action === "send-auth-code") {
+    syncAuthDraftFromForm(actionTarget.form);
+    if (getAuthCodeRemaining() > 0) return;
+    if (!normalizePhoneNumber(authDraft.phone)) {
+      notice = "请输入手机号码。";
+      authRegionOpen = false;
+      render();
+      return;
+    }
+    notice = "";
+    authRegionOpen = false;
+    render();
+    startAuthCodeCountdown();
+  }
+
   if (action === "toggle-select") {
     openSelectField = openSelectField === actionTarget.dataset.selectField ? null : actionTarget.dataset.selectField;
     render();
@@ -2160,49 +2580,100 @@ document.addEventListener("click", (event) => {
 document.addEventListener("submit", (event) => {
   event.preventDefault();
 
-  if (event.target.id === "loginForm") {
+  if (event.target.id === "authForm") {
+    syncAuthDraftFromForm(event.target);
     const data = new FormData(event.target);
-    const email = String(data.get("email") || "").trim().toLowerCase();
-    const accounts = getAccounts();
-    const account = accounts.find((item) => item.email === email);
-    if (account) {
-      localStorage.setItem(storageKeys.currentUser, account.email);
-      notice = "";
-      const next = localStorage.getItem(storageKeys.authReturn) || "/account";
-      localStorage.removeItem(storageKeys.authReturn);
-      navigate(next);
-    } else {
-      localStorage.setItem(storageKeys.registerEmail, email);
-      notice = "这个邮箱还没有注册，请先创建账户。";
-      navigate("/register");
-    }
-  }
+    const phone = normalizePhoneNumber(data.get("phone"));
+    const credential = String(data.get("credential") || "").trim();
+    const newPassword = String(data.get("newPassword") || "").trim();
+    const captcha = String(data.get("captcha") || "").trim();
+    const agreed = Boolean(data.get("agreement"));
 
-  if (event.target.id === "registerForm") {
-    const data = new FormData(event.target);
-    const email = String(data.get("email") || "").trim().toLowerCase();
-    const name = String(data.get("name") || "").trim();
-    const phone = String(data.get("phone") || "").trim();
-    const accounts = getAccounts();
-    const exists = accounts.find((item) => item.email === email);
-    if (exists) {
-      localStorage.setItem(storageKeys.currentUser, exists.email);
-    } else {
-      accounts.push({
-        email,
-        name,
-        phone,
-        address: "",
-        coupons: defaultCoupons()
-      });
-      saveAccounts(accounts);
-      localStorage.setItem(storageKeys.currentUser, email);
+    if (!isAuthSubmitReady()) {
+      notice = authMode === "password" ? "" : "请填写完整登录信息。";
+      updateAuthSubmitState();
+      return;
     }
-    localStorage.removeItem(storageKeys.registerEmail);
+
+    if (authMode !== "resetPassword" && !phone) {
+      notice = "请输入手机号码。";
+      render();
+      return;
+    }
+    if (authMode !== "resetPassword" && !credential) {
+      notice = authMode === "password" ? "请输入登录密码。" : "请输入短信验证码。";
+      render();
+      return;
+    }
+    let account = findAccountByPhone(authPhoneCode, phone);
+    if (authMode === "password") {
+      if (authShowCaptcha && captcha !== "1234") {
+        authErrors = {
+          password: authErrors.password || "密码错误",
+          captcha: "验证码错误"
+        };
+        authShowCaptcha = true;
+        notice = "";
+        render();
+        return;
+      }
+      if (!account || !account.password) {
+        authErrors = {
+          password: "密码错误",
+          captcha: "验证码错误"
+        };
+        authShowCaptcha = true;
+        notice = "";
+        render();
+        return;
+      }
+      if (account.password !== credential) {
+        authErrors = {
+          password: "密码错误",
+          captcha: "验证码错误"
+        };
+        authShowCaptcha = true;
+        notice = "";
+        render();
+        return;
+      }
+    } else if (authMode === "resetVerify") {
+      notice = "";
+      authMode = "resetPassword";
+      stopAuthCodeCountdown();
+      render();
+      return;
+    } else if (authMode === "resetPassword") {
+      if (!newPassword) {
+        notice = "请设置新的登录密码。";
+        render();
+        return;
+      }
+      account = upsertPhoneAccount(authPhoneCode, authDraft.phone, { password: newPassword });
+    } else {
+      account = upsertPhoneAccount(authPhoneCode, phone);
+    }
+
+    if (!authMode.startsWith("reset") && !agreed) {
+      notice = "请先阅读并同意相关协议。";
+      render();
+      return;
+    }
+
+    localStorage.setItem(storageKeys.currentUser, account.email);
     notice = "";
+    if (authMode === "resetPassword") {
+      showToast("密码设置成功");
+    }
+    authRegionOpen = false;
+    authMode = "code";
+    resetAuthErrors();
+    stopAuthCodeCountdown();
+    resetAuthDraft();
     const next = localStorage.getItem(storageKeys.authReturn) || "/account";
     localStorage.removeItem(storageKeys.authReturn);
     navigate(next);
+    return;
   }
 
   if (event.target.id === "couponForm") {
